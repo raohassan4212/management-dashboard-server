@@ -6,10 +6,8 @@ const signUp = async (reqData) => {
   let salt = bcrypt.genSaltSync(10);
   let hash = bcrypt.hashSync(reqData.password, salt);
   let newUser = await Users.create({
-    name: reqData.name,
-    email: reqData.email,
+    ...reqData,
     password: hash,
-    // role: reqData.role,
   });
 
   return newUser;
