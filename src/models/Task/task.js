@@ -2,7 +2,7 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../../config/dbConnect");
 
 const User = sequelize.define(
-  "User",
+  "Tasks",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -13,30 +13,21 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    email: {
+    description: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
+      allowNull: true,
     },
-    password: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    role: {
-      type: DataTypes.STRING,
+    startTime: {
+      type: DataTypes.DATE,
       allowNull: false,
     },
-    department: {
-      type: DataTypes.STRING,
+    endTime: {
+      type: DataTypes.DATE,
       allowNull: false,
-    },
-    token: {
-      type: DataTypes.STRING,
-      defaultValue: null,
     },
   },
   {
-    tableName: "Users",
+    tableName: "Tasks",
   }
 );
 

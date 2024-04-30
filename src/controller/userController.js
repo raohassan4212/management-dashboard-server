@@ -1,5 +1,6 @@
 const UserServices = require("../services/User/user");
 const cookie = require("cookie-parser");
+const userValidation = require("../validation/userValidation");
 
 const login = async (req, res) => {
   try {
@@ -48,25 +49,10 @@ const login = async (req, res) => {
 
 const signUp = async (req, res) => {
   try {
-    let { name, email, password } = req.body;
-    if (
-      name == undefined ||
-      name == "" ||
-      email == undefined ||
-      email == "" ||
-      password == undefined ||
-      password == ""
-    ) {
-      return res.status(422).json({
-        code: 422,
-        success: false,
-        message: "Required parameter is missing",
-        error: "Mission Parameter",
-      });
-    }
+    let { email } = req.body;
+    const validatedUser = await userValidation.validate(req.body);
 
     const existingUser = await UserServices.checkUser(email);
-
     if (existingUser) {
       return res.status(400).json({
         code: 400,
@@ -76,7 +62,7 @@ const signUp = async (req, res) => {
       });
     }
 
-    const response = await UserServices.signUp(req.body);
+    const response = await UserServices.signUp(validatedUser);
 
     return res.status(201).json({
       code: 201,
@@ -85,6 +71,14 @@ const signUp = async (req, res) => {
       data: response,
     });
   } catch (error) {
+    if (error.name === "ValidationError") {
+      return res.status(400).json({
+        code: 400,
+        success: false,
+        message: "error",
+        errors: error.errors,
+      });
+    }
     return res.status(500).json({
       code: 500,
       success: false,
