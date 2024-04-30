@@ -7,7 +7,7 @@ const userController = require("../../controller/user/userController");
 //*User Signup Api */
 router.post("/signup", userController.signUp);
 //*User Login Api */
-router.get("/login", userController.login);
+router.post("/signin", userController.login);
 //*User Get Api */
 router.get("/get", userController.get);
 //*User Update Api */

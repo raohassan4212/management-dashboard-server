@@ -23,8 +23,8 @@ sequelize.db1
 //   .then(() => console.log("DB:2 Synced"))
 //   .catch((err) => console.error("Failed to sync DB:", err));
 
-app.use("/public/api/v1/user", userRoutes);
-app.use("/public/api/v1/profile", profileRoutes);
+app.use("/public/api/v1/user/", userRoutes);
+app.use("/public/api/v1/profile/", profileRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is up on port ${PORT}`);
