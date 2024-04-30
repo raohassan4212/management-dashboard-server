@@ -1,10 +1,12 @@
 const errorLogger = require("../../functions/Logger");
+const profileValidation = require("../../validation/profile/profileValidation");
 
 const ProfileService = require("../../services/profile/profileService");
 
 const create = async (req, res) => {
   try {
-    const response = await ProfileService.create(req.body);
+    const validatedProfileInfo = await profileValidation.validate(req.body);
+    const response = await ProfileService.create(validatedProfileInfo);
 
     if (!response) {
       return res.status(201).json({
@@ -46,8 +48,8 @@ const update = async (req, res) => {
         error: "Mission Parameter",
       });
     }
-
-    const response = await ProfileService.update(req.body);
+    const validatedProfileInfo = await profileValidation.validate(req.body);
+    const response = await ProfileService.update(validatedProfileInfo);
 
     if (!response) {
       return res.status(201).json({

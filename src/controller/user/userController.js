@@ -1,9 +1,10 @@
 const cookie = require("cookie-parser");
 const UserServices = require("../../services/user/userService");
+
+const userValidation = require("../../validation/user/userValidation");
 const errorLogger = require("../../functions/Logger");
 
 const login = async (req, res) => {
-  console.log(req.body);
   try {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -91,23 +92,9 @@ const get = async (req, res) => {
 
 const signUp = async (req, res) => {
   try {
-    let { name, email, password } = req.body;
-    if (
-      name == undefined ||
-      name == "" ||
-      email == undefined ||
-      email == "" ||
-      password == undefined ||
-      password == ""
-    ) {
-      return res.status(422).json({
-        code: 422,
-        success: false,
-        message: "Required parameter is missing: name, email or password",
-        error: "Mission Parameter",
-      });
-    }
+    let { email } = req.body;
 
+    const validatedUser = await userValidation.validate(req.body);
     const existingUser = await UserServices.checkUser(email);
 
     if (existingUser) {
@@ -119,7 +106,7 @@ const signUp = async (req, res) => {
       });
     }
 
-    const response = await UserServices.signUp(req.body);
+    const response = await UserServices.signUp(validatedUser);
 
     return res.status(201).json({
       code: 201,
