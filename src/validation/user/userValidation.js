@@ -11,7 +11,8 @@ const userSchema = yup.object().shape({
     .min(8, "Password must be at least 8 characters long.")
     .required("Password is required."),
   role: yup.string().required("Role is required."),
-  department: yup.string().required("Department is required."),
+  has_salary: yup.boolean().required("Salary is required."),
+  has_commission: yup.boolean().required("Commission is required."),
 });
 
 module.exports = userSchema;

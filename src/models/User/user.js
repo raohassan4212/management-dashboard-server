@@ -1,7 +1,12 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../../config/dbConnect");
+const { db1 } = require("../../config/dbConnect");
 
-const User = sequelize.define(
+const PaymentMethod = require("../PaymentMethod/paymentMethod");
+const Salary = require("../Salary/salary");
+const CommissionRate = require("../CommissionRates/commissionRates");
+const ProfileInfo = require("../ProfileInfo/profileInfo");
+
+const User = db1.define(
   "User",
   {
     id: {
@@ -25,19 +30,29 @@ const User = sequelize.define(
     role: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    department: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      defaultValue: "Agent",
     },
     token: {
       type: DataTypes.STRING,
       defaultValue: null,
+    },
+    has_salary: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    has_commission: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
     },
   },
   {
     tableName: "Users",
   }
 );
+
+User.hasOne(PaymentMethod, { foreignKey: "user_id" });
+User.hasOne(Salary, { foreignKey: "user_id" });
+User.hasOne(CommissionRate, { foreignKey: "user_id" });
+User.hasOne(ProfileInfo, { foreignKey: "user_id" });
 
 module.exports = User;
