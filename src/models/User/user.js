@@ -47,7 +47,6 @@ const User = db1.define(
   },
   {
     tableName: "Users",
-    freezeTableName: true,
   }
 );
 
