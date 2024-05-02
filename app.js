@@ -8,6 +8,8 @@ const sequelize = require("./src/config/dbConnect");
 
 const userRoutes = require("./src/route/user/userRoutes");
 const profileRoutes = require("./src/route/profile/profileRoutes");
+const taskRoutes = require('./src/route/task/taskRoutes');
+const attendanceRoute = require("./src/route/attendence/attendenceRoute");
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -25,6 +27,9 @@ sequelize.db1
 
 app.use("/public/api/v1/user/", userRoutes);
 app.use("/public/api/v1/profile/", profileRoutes);
+app.use("/public/api/v1/task/", taskRoutes )
+app.use("/public/api/v1/attendence/", attendanceRoute )
+
 
 app.listen(PORT, () => {
   console.log(`Server is up on port ${PORT}`);
