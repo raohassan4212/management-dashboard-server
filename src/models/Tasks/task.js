@@ -19,13 +19,16 @@ const Task = db1.define(
       unique: true,
     },
     due_date: {
-      type: DataTypes.DATETIME,
+      type: DataTypes.DATE,
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM("Open", "In Progress", "Completed"),
+      type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "Open",
+      validate: {
+        isIn: ["Open", "In Progress", "Completed"],
+      },
     },
     last_updated: {
       type: DataTypes.STRING,

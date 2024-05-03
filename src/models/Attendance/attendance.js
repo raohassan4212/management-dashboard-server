@@ -10,16 +10,16 @@ const Attendance = db1.define(
       autoIncrement: true,
     },
     date: {
-      type: DataTypes.DATETIME,
+      type: DataTypes.DATE,
       allowNull: false,
     },
     clock_in: {
-      type: DataTypes.DATETIME,
+      type: DataTypes.DATE,
       allowNull: false,
       unique: true,
     },
     clock_out: {
-      type: DataTypes.DATETIME,
+      type: DataTypes.DATE,
       allowNull: false,
     },
     lng: {
