@@ -10,6 +10,7 @@ const userRoutes = require("./src/route/user/userRoutes");
 const profileRoutes = require("./src/route/profile/profileRoutes");
 const taskRoutes = require('./src/route/task/taskRoutes');
 const attendanceRoute = require("./src/route/attendence/attendenceRoute");
+const projectRoute = require("./src/route/Project/projectRoute");
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -27,8 +28,9 @@ sequelize.db1
 
 app.use("/public/api/v1/user/", userRoutes);
 app.use("/public/api/v1/profile/", profileRoutes);
-app.use("/public/api/v1/task/", taskRoutes )
-app.use("/public/api/v1/attendence/", attendanceRoute )
+app.use("/public/api/v1/task/", taskRoutes );
+app.use("/public/api/v1/attendence/", attendanceRoute );
+app.use("/public/api/v1/project/", projectRoute )
 
 
 app.listen(PORT, () => {

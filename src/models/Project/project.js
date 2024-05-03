@@ -23,9 +23,12 @@ const Project = db1.define(
       allowNull: false,
     },
     status: {
-      type: DataTypes.ENUM("Open", "In Progress", "Completed"),
+      type: DataTypes.STRING, 
       allowNull: false,
       defaultValue: "Open",
+      validate: {
+        isIn: [["Open", "In Progress", "Completed"]], 
+      },
     },
     pdf_link: {
       type:DataTypes.STRING,
