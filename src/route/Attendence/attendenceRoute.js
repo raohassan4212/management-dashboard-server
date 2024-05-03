@@ -17,5 +17,6 @@ router.get('/attendances/:attendanceId', attendanceController.getAttendanceById)
 // Get All Attendances API
 router.get('/attendances', attendanceController.getAllAttendances);
 
+
 module.exports = router;
   
