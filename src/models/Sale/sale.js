@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
-const {db1} = require("../../config/dbConnect");
+const { db1 } = require("../../config/dbConnect");
 
-const db1 = sequelize.define(
+const Sale = db1.define(
   "Sales",
   {
     id: {
@@ -9,23 +9,26 @@ const db1 = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    user_id: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     amount: {
       type: DataTypes.FLOAT,
       allowNull: false,
     },
     description: {
-      type: DataTypes.TEXT,
+      type: DataTypes.STRING,
       allowNull: false,
-      unique: true,
     },
     date: {
-      type: DataTypes.DATETIME,
+      type: DataTypes.DATE,
       allowNull: false,
     },
-    type: {
-      type: DataTypes.ENUM("Upfont", "Remaining", "Complete"),
+    sale_type: {
+      type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "Open",
+      defaultValue: "Upfront",
     },
     platform: {
       type: DataTypes.STRING,
