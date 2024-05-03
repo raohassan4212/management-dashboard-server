@@ -23,7 +23,7 @@ const getAllProjects = async () => {
 
 const getProjectById = async (projectId) => {
   try {
-    const project = await Project.findOne(projectId);
+    const project = await Project.findOne({ where: { id: projectId } });
     return project;
   } catch (error) {
     throw new Error("Failed to fetch project: " + error.message);
@@ -33,7 +33,7 @@ const getProjectById = async (projectId) => {
 
 const updateProjectById = async (projectId, projectData) => {
   try {
-    const project = await Project.findOne(projectId);
+    const project = await Project.findOne({ where: { id: projectId } });
     if (!project) {
       throw new Error("Project not found");
     }
@@ -47,7 +47,7 @@ const updateProjectById = async (projectId, projectData) => {
 
 const deleteProjectById = async (projectId) => {
   try {
-    const project = await Project.findOne(projectId);
+    const project = await Project.findOne({ where: { id: projectId } });
     if (!project) {
       throw new Error("Project not found");
     }
