@@ -1,4 +1,5 @@
 const Users = require("../../models/User/user");
+const ProfileInfo = require("../../models/ProfileInfo/profileInfo");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -37,6 +38,9 @@ const login = async (reqData, res) => {
     where: {
       email: email,
     },
+    include:[
+      { model: ProfileInfo },
+    ]
   });
   if (!user) {
     return {
@@ -60,7 +64,14 @@ const login = async (reqData, res) => {
   const token = jwt.sign(
     {
       id: user._id,
+      name: user.name,
       email: user.email,
+      designation: user.ProfileInfo.designation,
+      role: user.role,
+      has_commission: user.has_commission,
+      has_salary: user.has_salary,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     },
     jwtToken,
     {
