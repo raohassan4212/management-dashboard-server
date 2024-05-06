@@ -9,20 +9,12 @@ const ProfileInfo = db1.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: true,
-    },
     phone: {
       type: DataTypes.STRING,
       allowNull: true,
     },
     address: {
       type: DataTypes.STRING,
-      allowNull: true,
-    },
-    age: {
-      type: DataTypes.INTEGER,
       allowNull: true,
     },
     designation: {

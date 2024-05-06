@@ -13,6 +13,17 @@ const userSchema = yup.object().shape({
   role: yup.string().required("Role is required."),
   has_salary: yup.boolean().required("Salary is required."),
   has_commission: yup.boolean().required("Commission is required."),
+  phone: yup
+    .string()
+    .min(11, "Number must be at least 8 characters long.")
+    .max(11, "Number must be at least 8 characters long.")
+    .required("Number is required."),
+  address: yup.string(),
+  designation: yup.string().required("Designation is required."),
+  joined: yup.date().required("Joined is required."),
+  disjoined: yup.date(),
+  warning: yup.boolean().required("Warning is required."),
+  authorized: yup.boolean().required("Authorized is required."),
 });
 
 module.exports = userSchema;

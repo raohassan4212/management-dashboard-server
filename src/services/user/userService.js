@@ -1,7 +1,9 @@
-const Users = require("../../models/User/user");
-const ProfileInfo = require("../../models/ProfileInfo/profileInfo");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
+
+const Users = require("../../models/User/user");
+const ProfileInfo = require("../../models/ProfileInfo/profileInfo");
 
 const signUp = async (reqData) => {
   let salt = bcrypt.genSaltSync(10);
@@ -11,6 +13,18 @@ const signUp = async (reqData) => {
     email: reqData.email,
     password: hash,
     role: reqData.role,
+    has_commission: reqData.has_commission,
+    has_salary: reqData.has_salary,
+  });
+
+  await ProfileInfo.create({
+    phone: reqData.phone,
+    address: reqData.address,
+    designation: reqData.designation,
+    joined: reqData.joined,
+    authorized: reqData.authorized,
+    warning: reqData.warning,
+    user_id: newUser.id,
   });
 
   return newUser;
@@ -38,9 +52,7 @@ const login = async (reqData, res) => {
     where: {
       email: email,
     },
-    include:[
-      { model: ProfileInfo },
-    ]
+    include: [{ model: ProfileInfo }],
   });
   if (!user) {
     return {
@@ -91,10 +103,10 @@ const login = async (reqData, res) => {
 };
 
 const get = async (reqData, res) => {
-  if (reqData) {
+  if (reqData.id) {
     const userData = await Users.findOne({
       where: {
-        id: reqData,
+        id: reqData.id,
       },
     });
 
@@ -115,22 +127,43 @@ const get = async (reqData, res) => {
       };
     }
   }
-  if (!reqData) {
-    const userData = await Users.findAll();
-    if (userData) {
+  if (reqData.pageSize || reqData.page) {
+    const { role, name, email } = reqData;
+
+    let whereClause = {};
+    if (name) whereClause.name = { [Op.like]: `%${name }%`|| "" };
+    if (email) whereClause.email = { [Op.like]: `%${email }%`|| "" };
+
+    // Combine remaining filters using spread syntax (assuming they are all applicable):
+
+    const page = parseInt(reqData.page) || 0;
+    const pageSize = parseInt(reqData.pageSize) || 10;
+
+    const zeroBasedPage = Math.max(0, page - 1);
+    const offset = zeroBasedPage * pageSize;
+
+    let totalCount;
+    let users;
+    totalCount = await Users.count({ where: whereClause });
+    users = await Users.findAll({
+      where: whereClause,
+      include: [
+        {
+          model: ProfileInfo,
+        },
+      ],
+      offset,
+      limit: pageSize,
+    });
+    if (users) {
       return {
         code: 200,
         success: true,
         message: "all users found",
-        data: userData,
-      };
-    }
-    if (!userData) {
-      return {
-        code: 301,
-        success: false,
-        message: "users not found",
-        data: null,
+        data: users,
+        currentPage: parseInt(page),
+        pageSize: parseInt(pageSize),
+        totalCount,
       };
     }
   }
