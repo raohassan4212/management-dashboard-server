@@ -22,11 +22,11 @@ const Report = db1.define(
       allowNull: false,
     },
     period_start: {
-      type: DataTypes.DATETIME,
+      type: DataTypes.DATE,
       allowNull: false,
     },
     period_end: {
-      type: DataTypes.DATETIME,
+      type: DataTypes.DATE,
       allowNull: false,
     },
     total_sales: {
