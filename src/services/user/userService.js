@@ -4,6 +4,8 @@ const { Op } = require("sequelize");
 
 const Users = require("../../models/User/user");
 const ProfileInfo = require("../../models/ProfileInfo/profileInfo");
+const CommissionRate = require("../../models/CommissionRates/commissionRates");
+const Salary = require("../../models/Salary/salary");
 
 const signUp = async (reqData) => {
   let salt = bcrypt.genSaltSync(10);
@@ -26,6 +28,18 @@ const signUp = async (reqData) => {
     warning: reqData.warning,
     user_id: newUser.id,
   });
+  if (reqData.has_commission) {
+    await CommissionRate.create({
+      rate: reqData.commission_rate,
+      user_id: newUser.id,
+    });
+  }
+  if (reqData.has_salary) {
+    await Salary.create({
+      amount: reqData.salary_amount,
+      user_id: newUser.id,
+    });
+  }
 
   return newUser;
 };
@@ -131,10 +145,8 @@ const get = async (reqData, res) => {
     const { role, name, email } = reqData;
 
     let whereClause = {};
-    if (name) whereClause.name = { [Op.like]: `%${name }%`|| "" };
-    if (email) whereClause.email = { [Op.like]: `%${email }%`|| "" };
-
-    // Combine remaining filters using spread syntax (assuming they are all applicable):
+    if (name) whereClause.name = { [Op.like]: `%${name}%` || "" };
+    if (email) whereClause.email = { [Op.like]: `%${email}%` || "" };
 
     const page = parseInt(reqData.page) || 0;
     const pageSize = parseInt(reqData.pageSize) || 10;
@@ -150,6 +162,12 @@ const get = async (reqData, res) => {
       include: [
         {
           model: ProfileInfo,
+        },
+        {
+          model: Salary,
+        },
+        {
+          model: CommissionRate,
         },
       ],
       offset,
@@ -171,23 +189,87 @@ const get = async (reqData, res) => {
 
 const update = async (reqData, res) => {
   let parameter = "data";
+  let commission;
+  let salary;
 
   if (reqData) {
-    const updatedData = await Users.upsert({ ...reqData });
-    if (updatedData) {
+    const updatedUser = await Users.update(
+      {
+        id: reqData.id,
+        name: reqData.name,
+        email: reqData.email,
+        password: reqData.password,
+        has_commission: reqData.has_commission,
+        has_salary: reqData.has_salary,
+        role: reqData.role,
+      },
+      { where: { id: reqData.id } }
+    );
+    const updatedProfileInfo = await ProfileInfo.update(
+      {
+        id: reqData.profileInfoId,
+        designation: reqData.designation,
+        address: reqData.address,
+        authorized: reqData.authorized,
+        warning: reqData.warning,
+        phone: reqData.phone,
+        joined: reqData.joined,
+      },
+      { where: { user_id: reqData.id } }
+    );
+    if (reqData.has_commission === true) {
+      commission = await CommissionRate.upsert(
+        {
+          id: reqData.commissionRateId,
+          rate: reqData.commission_rate,
+          user_id: reqData.id,
+        },
+        { where: { user_id: reqData.id } }
+      );
+    } else {
+      if (reqData.commissionRateId) {
+        CommissionRate.destroy({ where: { id: reqData.commissionRateId } });
+      }
+    }
+    if (reqData.has_salary === true) {
+      salary = await Salary.upsert(
+        {
+          id: reqData.salaryId,
+          amount: reqData.salary_amount,
+          user_id: reqData.id,
+        },
+        { where: { user_id: reqData.id } }
+      );
+    } else {
+      if (reqData.salaryId) {
+        Salary.destroy({ where: { id: reqData.salaryId } });
+      }
+    }
+
+    if (updatedUser && updatedProfileInfo) {
       return {
         code: 301,
         success: true,
         message: "user updated",
-        data: updatedData,
+        data: {
+          user: updatedUser,
+          profileInfo: updatedProfileInfo,
+          commission: commission,
+          salary: salary,
+        },
       };
     }
-    if (!updatedData) {
+    if (!updatedUser || !updatedProfileInfo) {
       return {
         code: 301,
         success: false,
         message: "user not updated",
-        data: updatedData,
+        data: {
+          user: updatedUser,
+          profileInfo: updatedProfileInfo,
+          commission: commission,
+          salary: salary,
+        },
       };
     }
   }

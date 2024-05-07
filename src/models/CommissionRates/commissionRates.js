@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const {db1} = require("../../config/dbConnect");
+const { db1 } = require("../../config/dbConnect");
 
 const User = require("../User/user");
 
@@ -11,12 +11,15 @@ const CommissionRate = db1.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    user_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: "Users",
+        key: "id",
+      },
+    },
     rate: {
       type: DataTypes.FLOAT,
-    },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: true,
     },
     createdAt: {
       type: DataTypes.DATE,
