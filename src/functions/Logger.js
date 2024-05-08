@@ -4,4 +4,6 @@ const errorLogger = (request, code, error, table, no, msg) => {
   );
 };
 
+
+
 module.exports = errorLogger;
