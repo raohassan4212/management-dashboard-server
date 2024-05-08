@@ -1,6 +1,11 @@
-const Users = require("../../models/User/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { Op } = require("sequelize");
+
+const Users = require("../../models/User/user");
+const ProfileInfo = require("../../models/ProfileInfo/profileInfo");
+const CommissionRate = require("../../models/CommissionRates/commissionRates");
+const Salary = require("../../models/Salary/salary");
 
 const signUp = async (reqData) => {
   let salt = bcrypt.genSaltSync(10);
@@ -10,7 +15,31 @@ const signUp = async (reqData) => {
     email: reqData.email,
     password: hash,
     role: reqData.role,
+    has_commission: reqData.has_commission,
+    has_salary: reqData.has_salary,
   });
+
+  await ProfileInfo.create({
+    phone: reqData.phone,
+    address: reqData.address,
+    designation: reqData.designation,
+    joined: reqData.joined,
+    authorized: reqData.authorized,
+    warning: reqData.warning,
+    user_id: newUser.id,
+  });
+  if (reqData.has_commission) {
+    await CommissionRate.create({
+      rate: reqData.commission_rate,
+      user_id: newUser.id,
+    });
+  }
+  if (reqData.has_salary) {
+    await Salary.create({
+      amount: reqData.salary_amount,
+      user_id: newUser.id,
+    });
+  }
 
   return newUser;
 };
@@ -37,6 +66,7 @@ const login = async (reqData, res) => {
     where: {
       email: email,
     },
+    include: [{ model: ProfileInfo }],
   });
   if (!user) {
     return {
@@ -60,7 +90,14 @@ const login = async (reqData, res) => {
   const token = jwt.sign(
     {
       id: user._id,
+      name: user.name,
       email: user.email,
+      designation: user.ProfileInfo.designation,
+      role: user.role,
+      has_commission: user.has_commission,
+      has_salary: user.has_salary,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     },
     jwtToken,
     {
@@ -80,10 +117,10 @@ const login = async (reqData, res) => {
 };
 
 const get = async (reqData, res) => {
-  if (reqData) {
+  if (reqData.id) {
     const userData = await Users.findOne({
       where: {
-        id: reqData,
+        id: reqData.id,
       },
     });
 
@@ -104,22 +141,47 @@ const get = async (reqData, res) => {
       };
     }
   }
-  if (!reqData) {
-    const userData = await Users.findAll();
-    if (userData) {
+  if (reqData.pageSize || reqData.page) {
+    const { role, name, email } = reqData;
+
+    let whereClause = {};
+    if (name) whereClause.name = { [Op.like]: `%${name}%` || "" };
+    if (email) whereClause.email = { [Op.like]: `%${email}%` || "" };
+
+    const page = parseInt(reqData.page) || 0;
+    const pageSize = parseInt(reqData.pageSize) || 10;
+
+    const zeroBasedPage = Math.max(0, page - 1);
+    const offset = zeroBasedPage * pageSize;
+
+    let totalCount;
+    let users;
+    totalCount = await Users.count({ where: whereClause });
+    users = await Users.findAll({
+      where: whereClause,
+      include: [
+        {
+          model: ProfileInfo,
+        },
+        {
+          model: Salary,
+        },
+        {
+          model: CommissionRate,
+        },
+      ],
+      offset,
+      limit: pageSize,
+    });
+    if (users) {
       return {
         code: 200,
         success: true,
         message: "all users found",
-        data: userData,
-      };
-    }
-    if (!userData) {
-      return {
-        code: 301,
-        success: false,
-        message: "users not found",
-        data: null,
+        data: users,
+        currentPage: parseInt(page),
+        pageSize: parseInt(pageSize),
+        totalCount,
       };
     }
   }
@@ -127,23 +189,87 @@ const get = async (reqData, res) => {
 
 const update = async (reqData, res) => {
   let parameter = "data";
+  let commission;
+  let salary;
 
   if (reqData) {
-    const updatedData = await Users.upsert({ ...reqData });
-    if (updatedData) {
+    const updatedUser = await Users.update(
+      {
+        id: reqData.id,
+        name: reqData.name,
+        email: reqData.email,
+        password: reqData.password,
+        has_commission: reqData.has_commission,
+        has_salary: reqData.has_salary,
+        role: reqData.role,
+      },
+      { where: { id: reqData.id } }
+    );
+    const updatedProfileInfo = await ProfileInfo.update(
+      {
+        id: reqData.profileInfoId,
+        designation: reqData.designation,
+        address: reqData.address,
+        authorized: reqData.authorized,
+        warning: reqData.warning,
+        phone: reqData.phone,
+        joined: reqData.joined,
+      },
+      { where: { user_id: reqData.id } }
+    );
+    if (reqData.has_commission === true) {
+      commission = await CommissionRate.upsert(
+        {
+          id: reqData.commissionRateId,
+          rate: reqData.commission_rate,
+          user_id: reqData.id,
+        },
+        { where: { user_id: reqData.id } }
+      );
+    } else {
+      if (reqData.commissionRateId) {
+        CommissionRate.destroy({ where: { id: reqData.commissionRateId } });
+      }
+    }
+    if (reqData.has_salary === true) {
+      salary = await Salary.upsert(
+        {
+          id: reqData.salaryId,
+          amount: reqData.salary_amount,
+          user_id: reqData.id,
+        },
+        { where: { user_id: reqData.id } }
+      );
+    } else {
+      if (reqData.salaryId) {
+        Salary.destroy({ where: { id: reqData.salaryId } });
+      }
+    }
+
+    if (updatedUser && updatedProfileInfo) {
       return {
         code: 301,
         success: true,
         message: "user updated",
-        data: updatedData,
+        data: {
+          user: updatedUser,
+          profileInfo: updatedProfileInfo,
+          commission: commission,
+          salary: salary,
+        },
       };
     }
-    if (!updatedData) {
+    if (!updatedUser || !updatedProfileInfo) {
       return {
         code: 301,
         success: false,
         message: "user not updated",
-        data: updatedData,
+        data: {
+          user: updatedUser,
+          profileInfo: updatedProfileInfo,
+          commission: commission,
+          salary: salary,
+        },
       };
     }
   }

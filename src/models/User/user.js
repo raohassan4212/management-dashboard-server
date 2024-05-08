@@ -30,7 +30,7 @@ const User = db1.define(
     role: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "Agent",
+      defaultValue: "agent",
     },
     token: {
       type: DataTypes.STRING,

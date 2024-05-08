@@ -55,10 +55,10 @@ const login = async (req, res) => {
 };
 
 const get = async (req, res) => {
+  const { id } = req.query;
   try {
-    const { id } = req.query;
     if (id) {
-      const response = await UserServices.get(id);
+      const response = await UserServices.get(req.query);
       return res.status(response.code).json({
         code: response.code,
         success: response.success,
@@ -67,12 +67,14 @@ const get = async (req, res) => {
       });
     }
     if (!id) {
-      const response = await UserServices.get(null);
+      const response = await UserServices.get(req.query);
       return res.status(response.code).json({
         code: response.code,
         success: response.success,
         message: response.message,
         data: response.data,
+        pageSize: response.pageSize,
+        totalCount: response.totalCount,
       });
     }
   } catch (error) {
@@ -80,7 +82,7 @@ const get = async (req, res) => {
     let errorMessage = "Error founding user";
 
     // Handle specific errors and set appropriate status code/message
-    errorLogger("POST", statusCode, error, "USER", "1", errorMessage);
+    errorLogger("GET", statusCode, error, "USER", "1", errorMessage);
 
     return res.status(statusCode).json({
       code: statusCode,
