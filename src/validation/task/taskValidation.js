@@ -30,4 +30,4 @@ const taskSchema = yup.object().shape({
 });
 
 
-module.exports = { taskSchema };
+module.exports =  taskSchema ;

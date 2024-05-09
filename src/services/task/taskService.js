@@ -1,171 +1,126 @@
+const { reach } = require("yup");
 const Task = require("../../models/Tasks/task");
 
-const createTask = async (taskData) => {
-  try {
-    if (!taskData) {
-      return {
-        code: 301,
-        success: false,
-        message: "Task data is missing",
-        data: null,
-      };
-    }
+const createTask = async (reqData) => {
+const newTask = await Task.create({
+  title: reqData.title,
+  description: reqData.description,
+  due_date: reqData.due_date,
+  last_updated: reqData.last_updated,
+  status: reqData.status,
+});
 
-    // Create a new task in the database
-    const newTask = await Task.create(taskData);
+return newTask;
+};
 
-    if (newTask) {
-      return {
-        code: 301,
+
+const updateTask = async (reqData, res) => {
+if(reqData){
+  const updatedTask = await Task.upsert({...reqData});
+  if(updatedTask){
+    return{
+      code: 301,
+      success: true,
+      message: "Task updated",
+      data: updatedTask,
+    };
+  }
+  if(!updatedTask){
+    return{
+      code:301,
+      success:false,
+      message: "Task not updated",
+        data: updatedTask,
+    };
+  }
+}
+if(!reqData){
+  return{
+    code: 301,
+      success: false,
+      message: `${parameter} missing value`,
+      data: null,
+  };
+}
+};
+
+const deleteTask = async (reqData, res) => {
+  let parameter = "id";
+  if(reqData){
+    const deletedTask = await Task.destroy({where:{id: reqData}});
+    if(deletedTask){
+      return{
+        code: 200,
         success: true,
-        message: "Task created successfully",
-        data: newTask,
+        message: "Task deleted",
+        data: deletedTask,
       };
-    } else {
-      return {
+    }
+    if(!deletedTask){
+      return{
         code: 301,
         success: false,
-        message: "Failed to create task",
+        message: "Task not deleted",
         data: null,
       };
     }
-  } catch (error) {
-    console.error("Error creating task:", error);
-    return {
-      code: 500,
+  } 
+  if(!reqData){
+    return{
+      code: 301,
       success: false,
-      message: "Internal server error",
+      message: `${parameter} missing value`,
       data: null,
     };
   }
 };
 
-const completeTask = async (taskId) => {
-  try {
-    // Find task by ID
-    const taskToComplete = await Task.findOne({ where: { id: taskId } });
+const getTask = async (reqData, res) => {
+if (reqData){
+  const taskData = await Task.findOne({where:{id: reqData,},});
 
-    if (!taskToComplete) {
-      return {
-        code: 404,
-        success: false,
-        message: "Task not found",
-        data: null,
-      };
-    }
-
-    // Update task status to Completed
-    taskToComplete.status = "Completed";
-    await taskToComplete.save();
-
-    return {
-      code: 200,
-      success: true,
-      message: "Task marked as completed",
-      data: taskToComplete,
-    };
-  } catch (error) {
-    console.error("Error completing task:", error);
-    return {
-      code: 500,
-      success: false,
-      message: "Internal server error",
-      data: null,
-    };
-  }
-};
-
-const deleteTask = async (taskId) => {
-  try {
-    // Find task by ID
-    const taskToDelete = await Task.findOne({ where: { id: taskId } });
-
-    if (!taskToDelete) {
-      return {
-        code: 404,
-        success: false,
-        message: "Task not found",
-        data: null,
-      };
-    }
-
-    // Delete task from the database
-    await taskToDelete.destroy();
-
-    return {
-      code: 200,
-      success: true,
-      message: "Task deleted successfully",
-      data: taskToDelete,
-    };
-  } catch (error) {
-    console.error("Error deleting task:", error);
-    return {
-      code: 500,
-      success: false,
-      message: "Internal server error",
-      data: null,
-    };
-  }
-};
-
-const getTaskById = async (taskId) => {
-  try {
-    //Find task by Id
-    const task = await Task.findOne({ where: { id: taskId } });
-
-    if (!task) {
-      return {
-        code: 404,
-        success: false,
-        message: "Task not found",
-        data: null,
-      };
-    }
-
+  if(taskData){
     return {
       code: 200,
       success: true,
       message: "Task found",
-      data: task,
+      data: taskData,
     };
-  } catch (error) {
-    console.error("Error fetching task:", error);
+  }
+  if(!taskData){
     return {
-      code: 500,
+      code: 301,
       success: false,
-      message: "Internal server error",
+      message: "Task not found",
       data: null,
     };
   }
-};
+}
 
-const getAllTasks = async () => {
-  try {
-    // Find all tasks
-    const tasks = await Task.findAll();
-
-    return {
+if(!reqData){
+  const taskData = await Task.findAll();
+  if(taskData){
+    return{
       code: 200,
       success: true,
-      message: "Tasks found",
-      data: tasks,
+      message: "All Tasks Found",
+      data: taskData,
     };
-  } catch (error) {
-    console.error("Error fetching tasks:", error);
+  }
+  if(!taskData){
     return {
-      code: 500,
+      code: 301,
       success: false,
-      message: "Internal server error",
+      message: "Task not found",
       data: null,
     };
   }
+}
 };
 
 module.exports = {
   createTask,
-  completeTask,
+  updateTask,
   deleteTask,
-  getTaskById,
-  getAllTasks,
+  getTask,
 };

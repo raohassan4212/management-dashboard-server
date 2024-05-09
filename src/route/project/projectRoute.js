@@ -6,15 +6,12 @@ const projectController = require("../../controller/Project/projectController");
 router.post("/projects", projectController.createProject);
 
 //get all projects
-router.get("/projects", projectController.getAllProjects);
+router.get("/get", projectController.getProject);
 
-//get a project by ID
-router.get("/projects/:projectId", projectController.getProjectById);
-
-//update a project by ID
-router.put("/projects/:projectId", projectController.updateProjectById);
+//update a project
+router.put("/update", projectController.updateProject);
 
 //delete a project by ID
-router.delete("/projects/:projectId", projectController.deleteProjectById);
+router.delete("/:id/delete", projectController.deleteProject);
 
 module.exports = router;

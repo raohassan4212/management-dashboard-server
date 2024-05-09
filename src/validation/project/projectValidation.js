@@ -1,6 +1,6 @@
 const yup = require("yup");
 
-const createProjectSchema = yup.object().shape({
+const projectSchema = yup.object().shape({
   title: yup
   .string()
   .required("Title is required"),
@@ -41,4 +41,4 @@ const createProjectSchema = yup.object().shape({
 });
 
 
-module.exports = { createProjectSchema };
+module.exports = projectSchema;

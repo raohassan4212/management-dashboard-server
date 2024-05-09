@@ -5,152 +5,144 @@ const errorLogger = require("../../functions/Logger");
 
 
 const createTask = async (req, res) => {
-  try {
-    const validatedTask = await taskValidation.validate(req.body);
+try{
+  const validatedTask = await taskValidation.validate(req.body);
+  const newTask = await TaskService.createTask(validatedTask);
 
-    const newTask = await TaskService.createTask(validatedTask);
+  return res.status(201).json({
+    code: 201,
+    success: true,
+    message: "Task created successfully ",
+    data: newTask,
+  });
+} catch(error){
+  let statuscode = 500;
+  let errorMessage = "Error creating Task";
 
+  errorLogger("POST", statuscode, error, "TASK", "1", errorMessage);
+
+  return res.status(statuscode).json({
+    code: statuscode,
+    success: false,
+    message: errorMessage,
+  });
+ }
+};
+
+const updateTask = async (req, res) => {
+  try{
+    let {id} = req.body;
+
+    if(id == undefined || id == null){
+      return res.status(422).json({
+        code: 422,
+        success: false,
+        message: "Required parameter is missing: id",
+        error: "Mission Parameter",
+      });
+    }
+
+    const response = await TaskService.updateTask(req.body);
+    if(!response){
+      return res.status(201).json({
+        code: 404,
+        success: false,
+        message: "Task not updated",
+        data: null,
+      });
+    }
     return res.status(201).json({
       code: 201,
       success: true,
-      message: 'Task created successfully',
-      data: newTask,
+      message: "Task updated successfully",
+      data: response,
     });
-  } catch (error) {
-    errorLogger('CREATE_TASK', 500, error, 'TASK', '1', 'Error creating task');
+  } catch (error){
+    let statusCode = 500;
+    let errorMessage = "Error updating task";
 
-    return res.status(500).json({
-      code: 500,
+    errorLogger("UPDATE", statusCode, error, "TASK", "1", errorMessage);
+    return res.status(statusCode).json({
+      code: statusCode,
       success: false,
-      message: 'Failed to create task',
-      error: error.message,
-    });
+      message: errorMessage,
+  });
   }
 };
-
-
-const completeTask = async (req, res) => {
-    try {
-      const { id } = req.params;
-  
-      const completedTask = await TaskService.completeTask(id);
-  
-      if (!completedTask) {
-        return res.status(404).json({
-          code: 404,
-          success: false,
-          message: 'Task not found',
-          data: null,
-        });
-      }
-  
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        message: 'Task marked as completed',
-        data: completedTask,
-      });
-    } catch (error) {
-      errorLogger('COMPLETE_TASK', 500, error, 'TASK', '1', 'Error completing task');
-  
-      return res.status(500).json({
-        code: 500,
-        success: false,
-        message: 'Failed to complete task',
-        error: error.message,
-      });
-    }
-};
-
 
 const deleteTask = async (req, res) => {
-    try {
-      const { id } = req.params;
-  
-      const deletedTask = await TaskService.deleteTask(id);
-  
-      if (!deletedTask) {
-        return res.status(404).json({
-          code: 404,
-          success: false,
-          message: 'Task not found',
-          data: null,
-        });
-      }
-  
+  try{
+    const {id} = req.params;
+    if(!id){
+      return res.status(422).json({
+        code: 422,
+        success: false,
+        message: "Missing required parameter: id",
+      });
+    }
+    const deletedTask = await TaskService.deleteTask(id);
+    if(!deleteTask.success){
+      return res.status(200).json({
+        code: 404,
+        success: false,
+        message: "Task not deleted",
+      });
+    }
+    if(deletedTask.success){
       return res.status(200).json({
         code: 200,
         success: true,
-        message: 'Task deleted successfully',
+        message: "Task deleted successfully",
         data: deletedTask,
       });
-    } catch (error) {
-      errorLogger('DELETE_TASK', 500, error, 'TASK', '1', 'Error deleting task');
-  
-      return res.status(500).json({
-        code: 500,
-        success: false,
-        message: 'Failed to delete task',
-        error: error.message,
-      });
     }
-};
+  } catch (error){
+    let statusCode = 500;
+    let errorMessage = "Error deleting Task";
 
-
-const getTaskById = async (req, res) => {
-    try {
-      const { id } = req.params;
-  
-      const task = await TaskService.getTaskById(id);
-  
-      if (!task) {
-        return res.status(404).json({
-          code: 404,
-          success: false,
-          message: 'Task not found',
-          data: null,
-        });
-      }
-  
-      return res.status(200).json({
-        code: 200,
-        success: true,
-        message: 'Task retrieved successfully',
-        data: task,
-      });
-    } catch (error) {
-      errorLogger('GET_TASK_BY_ID', 500, error, 'TASK', '1', 'Error retrieving task');
-  
-      return res.status(500).json({
-        code: 500,
-        success: false,
-        message: 'Failed to retrieve task',
-        error: error.message,
-      });
-    }
-};
-
-
-const getAllTasks = async (req, res) => {
-  try {
-    const tasks = await TaskService.getAllTasks();
-
-    return res.status(200).json({
-      code: 200,
-      success: true,
-      message: 'Tasks retrieved successfully',
-      data: tasks,
-    });
-  } catch (error) {
-    errorLogger('GET_ALL_TASKS', 500, error, 'TASK', '1', 'Error retrieving tasks');
-
-    return res.status(500).json({
-      code: 500,
+    errorLogger("DELETE", statusCode, error, "TASK", "1", errorMessage);
+    return res.status(statusCode).json({
+      code: statusCode,
       success: false,
-      message: 'Failed to retrieve tasks',
-      error: error.message,
+      message: errorMessage,
     });
   }
 };
 
-module.exports = { createTask, getAllTasks, getTaskById, completeTask, deleteTask };
+const getTask = async (req, res) => {
+try{
+  const {id} = req.query;
+  if(id){
+    const response = await TaskService.getTask(id);
+    return res.status(response.code).json({
+      code: response.code,
+      success: response.success,
+      message: response.message,
+      data: response.data,
+    });
+  }
+  if(!id){
+    const response = await TaskService.getTask(null);
+    return res.status(response.code).json({
+      code: response.code,
+      success: response.success,
+      message: response.message,
+      data: response.data,
+    });
+  }
+} catch (error){
+  let statuscode = 500;
+  let errorMessage = "Error founding Task";
+
+  errorLogger("POST", statuscode, error, "TASK", "1", errorMessage);
+
+  return res.status(statuscode).json({
+    code: statuscode,
+    success: false,
+    message: errorMessage,
+  });
+}
+};
+
+
+module.exports = { createTask, getTask, updateTask, deleteTask };

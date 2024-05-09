@@ -1,62 +1,138 @@
 const Project = require("../../models/Project/project");
 
 
-const createProject = async (projectData) => {
-  try {
-    const newProject = await Project.create(projectData);
+const createProject = async (reqData) => {
+  
+    const newProject = await Project.create({
+      title: reqData.title,
+      description: reqData.description,
+      due_date: reqData.due_date,
+      pdf_link: reqData.pdf_link,
+      type: reqData.type,
+      last_updated: reqData.last_updated,
+      status: reqData.status,
+});
+    
+    
     return newProject;
-  } catch (error) {
-    throw new Error("Failed to create project: " + error.message);
-  }
+ 
 };
 
+const getProject = async (reqData, res) => {
+  
+   if (reqData){
+    const projectData = await Project.findOne({where: {
+        id: reqData,
+      },
+    });
 
-const getAllProjects = async () => {
-  try {
-    const projects = await Project.findAll();
-    return projects;
-  } catch (error) {
-    throw new Error("Failed to fetch projects: " + error.message);
-  }
-};
-
-
-const getProjectById = async (projectId) => {
-  try {
-    const project = await Project.findOne({ where: { id: projectId } });
-    return project;
-  } catch (error) {
-    throw new Error("Failed to fetch project: " + error.message);
-  }
-};
-
-
-const updateProjectById = async (projectId, projectData) => {
-  try {
-    const project = await Project.findOne({ where: { id: projectId } });
-    if (!project) {
-      throw new Error("Project not found");
+    if (projectData) {
+      return {
+        code: 200,
+        success: true,
+        message: "project found",
+        data: projectData,
+      };
     }
-    await project.update(projectData);
-    return project;
-  } catch (error) {
-    throw new Error("Failed to update project: " + error.message);
-  }
-};
 
-
-const deleteProjectById = async (projectId) => {
-  try {
-    const project = await Project.findOne({ where: { id: projectId } });
-    if (!project) {
-      throw new Error("Project not found");
+    if (!projectData){
+      return{
+        code: 301,
+        success: false,
+        message: "project not found",
+        data: null,
+      };
     }
-    await project.destroy();
-    return project;
-  } catch (error) {
-    throw new Error("Failed to delete project: " + error.message);
+
+  }
+
+  if (!reqData){
+    const projectData = await Project.findAll();
+    if(projectData) {
+      return{
+        code: 200,
+        success: true,
+        message: "all projects found",
+        data: projectData,
+      };
+    }
+    if(!projectData){
+      return{
+        code: 301,
+        success: false,
+        message: "project not found",
+        data: null,
+      };
+    }
+  }
+ 
+};
+
+
+const updateProject = async (reqData, res) => {
+  let parameter = "data";
+
+  if(reqData){
+    const updatedData = await Project.upsert({...reqData});
+    if (updatedData){
+      return{
+        code: 301,
+        success: true,
+        message: "project updated",
+        data: updatedData,
+      };
+    }
+    if(!updatedData){
+      return{
+        code: 301,
+        success: false,
+        message: "project not updated",
+        data: updatedData,
+      };
+    }
+  }
+  if(!reqData){
+    return{
+      code: 301,
+      success: false,
+      message: `${parameter} missing value`,
+      data: null,
+    };
+  }
+
+};
+
+
+const deleteProject = async (reqData, res) => {
+  let parameter = "id";
+  if(reqData){
+    const deletedProject = await Project.destroy({ where: { id: reqData } });
+  if (deletedProject){
+    return{
+      code: 200,
+      success: true,
+      message: "project deleted",
+      data: deletedProject,
+    };
+  }
+  if (!deletedProject) {
+    return {
+      code: 301,
+      success: false,
+      message: "project not deleted",
+      data: null,
+     };
+    }
+  }
+  if (!reqData) {
+    return {
+      code: 301,
+      success: false,
+      message: `${parameter} missing value`,
+      data: null,
+    };
   }
 };
 
 
-module.exports = { createProject, getAllProjects, getProjectById, updateProjectById, deleteProjectById };
+module.exports =  {createProject, getProject, updateProject, deleteProject};

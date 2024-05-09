@@ -5,73 +5,147 @@ const errorLogger = require("../../functions/Logger");
 
 const createProject = async (req, res) => {
   try {
-    const projectData = req.body;
+    const validatedProject = await projectValidation.validate(req.body);
+   
+    const newProject = await projectService.createProject(validatedProject);
 
-    // Validate project data before creating
-    await projectValidation.createProjectSchema.validate(projectData, { abortEarly: false });
-
-    const newProject = await projectService.createProject(projectData);
-    res.status(201).json(newProject);
+    return res.status(201).json({
+      code: 201,
+      success: true,
+      message: "Project created successfully ",
+      data: newProject,
+    });
   } catch (error) {
-    errorLogger('CREATE_PROJECT', 500, error, 'PROJECT', '1', 'Error creating project');
-    res.status(500).json({ error: error.message });
+    let statuscode = 500;
+    let errorMessage = "Error creating project";
+
+    // Handle specific errors and set appropriate status code/message
+    errorLogger("POST", statuscode, error, "PROJECT", "1", errorMessage);
+
+    return res.status(statuscode).json({
+      code: statuscode,
+      success: false,
+      message: errorMessage,
+    });
   }
 };
 
-
-const getAllProjects = async (req, res) => {
-  try {
-    const projects = await projectService.getAllProjects();
-    res.status(200).json(projects);
-  } catch (error) {
-    errorLogger('GET_ALL_PROJECTS', 500, error, 'PROJECT', '1', 'Error retrieving projects');
-    res.status(500).json({ error: error.message });
-  }
-};
-
-
-const getProjectById = async (req, res) => {
-  try {
-    const { projectId } = req.params;
-    const project = await projectService.getProjectById(projectId);
-    if (!project) {
-      return res.status(404).json({ message: "Project not found" });
+const getProject = async (req, res) => {
+  try{
+    const { id } = req.query;
+    if(id){
+      const response = await projectService.getProject(id);
+      return res.status(response.code).json({
+        code: response.code,
+        success: response.success,
+        message: response.message,
+        data: response.data,
+      });
     }
-    res.status(200).json(project);
+    if(!id){
+      const response = await projectService.getProject(null);
+      return res.status(response.code).json({
+        code: response.code,
+        success: response.success,
+        message: response.message,
+        data: response.data,
+      });
+    }
   } catch (error) {
-    errorLogger('GET_PROJECT_BY_ID', 500, error, 'PROJECT', '1', 'Error retrieving project');
-    res.status(500).json({ error: error.message });
-  }
+    let statuscode = 500;
+    let errorMessage = "Error founding project";
+
+  // Handle specific errors and set appropriate status code/message
+  errorLogger("POST", statuscode, error, "PROJECT", "1", errorMessage);
+
+  return res.status(statuscode).json({
+    code: statuscode,
+    success: false,
+    message: errorMessage,
+  });
+}
 };
 
+const updateProject = async (req, res) => {
+  try{
+    let { id } = req.body;
 
-const updateProjectById = async (req, res) => {
-  try {
-    const { projectId } = req.params;
-    const projectData = req.body;
+    if (id == undefined || id == null){
+      return res.status(422).json({
+        code: 422,
+        success: false,
+        message: "Required parameter is missing: id",
+        error: "Mission Parameter",
+      });
+    }
 
-    // Validate project data before updating
-    await projectValidation.updateProjectSchema.validate(projectData, { abortEarly: false });
+    const response = await projectService.updateProject(req.body);
+    if (!response) {
+      return res.status(201).json({
+        code: 404,
+        success: false,
+        message: "project not updated",
+        data: null,
+      });
+    }
+    return res.status(201).json({
+      code: 201,
+      success: true,
+      message: "project updated successfully",
+      data: response,
+    });
+} catch (error) {
+  let statusCode = 500;
+  let errorMessage = "Error updating project";
 
-    const updatedProject = await projectService.updateProjectById(projectId, projectData);
-    res.status(200).json(updatedProject);
-  } catch (error) {
-    errorLogger('UPDATE_PROJECT_BY_ID', 500, error, 'PROJECT', '1', 'Error updating project');
-    res.status(500).json({ error: error.message });
-  }
+  // Handle specific errors and set appropriate status code/message
+  errorLogger("UPDATE", statusCode, error, "PROJECT", "1", errorMessage);
+  return res.status(statusCode).json({
+    code: statusCode,
+    success: false,
+    message: errorMessage,
+  });
+ }
 };
 
-
-const deleteProjectById = async (req, res) => {
-  try {
-    const { projectId } = req.params;
-    const deletedProject = await projectService.deleteProjectById(projectId);
-    res.status(200).json(deletedProject);
+const deleteProject = async (req, res) => {
+  try{
+    const { id } = req.params;
+    if(!id){
+      return res.status(422).json({
+        code: 422,
+        success: false,
+        message: "Missing required parameter: id",
+      });
+    }
+    // Validate user update data
+    const deletedProject = await projectService.deleteProject(id);
+    if (!deletedProject.success) {
+      return res.status(200).json({
+        code: 404,
+        success: false,
+        message: "Project not deleted",
+      });
+    }
+    if (deletedProject.success) {
+      return res.status(200).json({
+        code: 200,
+        success: true,
+        message: "Project deleted successfully",
+        data: deletedProject,
+      });
+    }
   } catch (error) {
-    errorLogger('DELETE_PROJECT_BY_ID', 500, error, 'PROJECT', '1', 'Error deleting project');
-    res.status(500).json({ error: error.message });
+    let statusCode = 500;
+    let errorMessage = "Error deleting project";
+
+    // Handle specific errors and set appropriate status code/message
+    errorLogger("DELETE", statusCode, error, "PROJECT", "1", errorMessage);
+    return res.status(statusCode).json({
+      code: statusCode,
+      success: false,
+      message: errorMessage,
+    });
   }
 };
-
-
-module.exports = { createProject, getAllProjects, getProjectById, updateProjectById, deleteProjectById };
+module.exports = { createProject, getProject, updateProject, deleteProject };
