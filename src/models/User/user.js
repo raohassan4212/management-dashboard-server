@@ -5,6 +5,8 @@ const PaymentMethod = require("../PaymentMethod/paymentMethod");
 const Salary = require("../Salary/salary");
 const CommissionRate = require("../CommissionRates/commissionRates");
 const ProfileInfo = require("../ProfileInfo/profileInfo");
+const Attendance = require("../Attendance/attendance");
+const Allowance = require("../Allowance/allowance");
 
 const User = db1.define(
   "User",
@@ -44,6 +46,14 @@ const User = db1.define(
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    has_allowance: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+    blocked: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   {
     tableName: "Users",
@@ -51,6 +61,9 @@ const User = db1.define(
 );
 
 User.hasOne(PaymentMethod, { foreignKey: "user_id" });
+User.hasOne(Allowance, { foreignKey: "user_id" });
+User.hasMany(Attendance, { foreignKey: "user_id" });
+Attendance.belongsTo(User, { foreignKey: "user_id" });
 User.hasOne(Salary, { foreignKey: "user_id" });
 User.hasOne(CommissionRate, { foreignKey: "user_id" });
 User.hasOne(ProfileInfo, { foreignKey: "user_id" });

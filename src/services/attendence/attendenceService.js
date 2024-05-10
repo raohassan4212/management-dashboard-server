@@ -1,39 +1,96 @@
+const { Op } = require("sequelize");
 const Attendance = require("../../models/Attendance/attendance");
+const User = require("../../models/User/user");
+const moment = require("moment");
 
 const createAttendance = async (attendanceData) => {
   try {
     const newAttendance = await Attendance.create(attendanceData);
-
-    return newAttendance;
+    if (newAttendance) {
+      return {
+        code: 200,
+        success: true,
+        message: "Attendances created successfully",
+        data: newAttendance,
+      };
+    }
   } catch (error) {
     throw new Error("Failed to create attendance: " + error.message);
   }
 };
 
-const getAllAttendances = async () => {
-  const attendances = await Attendance.findAll();
-  return attendances;
+const getAllAttendances = async (reqData) => {
+  const { name, date, user_id } = reqData;
+
+  let whereClause = {};
+
+  if (date) whereClause.date = moment(date).format("YYYY-MM-DD");
+  if (user_id) whereClause.user_id = user_id || "";
+
+  const page = parseInt(reqData.page) || 0;
+  const pageSize = parseInt(reqData.pageSize) || 10;
+
+  const zeroBasedPage = Math.max(0, page - 1);
+  const offset = zeroBasedPage * pageSize;
+
+  let totalCount;
+  let attendances;
+
+  totalCount = await Attendance.count({ where: whereClause });
+  attendances = await Attendance.findAll({
+    where: whereClause,
+    include: [
+      {
+        model: User,
+        where: {
+          name: { [Op.substring]: `%${name || ""}%` },
+        },
+      },
+    ],
+    offset,
+    limit: pageSize,
+  });
+  if (attendances) {
+    return {
+      code: 200,
+      success: true,
+      message: "Attendances retrieved successfully",
+      data: attendances,
+      currentPage: parseInt(page),
+      pageSize: parseInt(pageSize),
+      totalCount,
+    };
+  }
 };
 
-const getAttendanceById = async (attendanceId) => {
-  const attendance = await Attendance.findOne({ where: { id: attendanceId } });
-  return attendance;
-};
-
-const updateAttendance = async (attendanceId, updatedData) => {
-  const attendance = await Attendance.findOne({ where: { id: attendanceId } });
+const updateAttendance = async (reqData) => {
+  if (!reqData) {
+    return {
+      code: 304,
+      success: false,
+      message: "No request body",
+      data: null,
+    };
+  }
+  const attendance = await Attendance.upsert(reqData);
 
   if (!attendance) {
-    throw new Error("Attendance not found");
+    return {
+      code: 304,
+      success: true,
+      message: "Attendances not updated",
+      data: attendance,
+    };
   }
 
-  await attendance.update(updatedData);
-
-  const updatedAttendance = await Attendance.findOne({
-    where: { id: attendanceId },
-  });
-
-  return updatedAttendance;
+  if (attendance) {
+    return {
+      code: 200,
+      success: true,
+      message: "Attendances updated successfully",
+      data: attendance,
+    };
+  }
 };
 
 const deleteAttendance = async (attendanceId) => {
@@ -51,7 +108,6 @@ const deleteAttendance = async (attendanceId) => {
 module.exports = {
   createAttendance,
   getAllAttendances,
-  getAttendanceById,
   updateAttendance,
   deleteAttendance,
 };

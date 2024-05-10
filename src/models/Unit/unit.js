@@ -1,7 +1,7 @@
 const { DataTypes } = require("sequelize");
 const {db1} = require("../../config/dbConnect");
 
-const ProfileInfo = require("../ProfileInfo/profileInfo");
+const User = require("../User/user");
 
 const Unit = db1.define(
   "Unit",
@@ -22,6 +22,6 @@ const Unit = db1.define(
   }
 );
 
-Unit.hasOne(ProfileInfo, { foreignKey: "unit_id" });
+Unit.hasOne(User, { foreignKey: "unit_id" });
 
 module.exports = Unit;

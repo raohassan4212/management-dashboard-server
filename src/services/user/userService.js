@@ -6,6 +6,7 @@ const Users = require("../../models/User/user");
 const ProfileInfo = require("../../models/ProfileInfo/profileInfo");
 const CommissionRate = require("../../models/CommissionRates/commissionRates");
 const Salary = require("../../models/Salary/salary");
+const Allowance = require("../../models/Allowance/allowance");
 
 const signUp = async (reqData) => {
   let salt = bcrypt.genSaltSync(10);
@@ -17,6 +18,8 @@ const signUp = async (reqData) => {
     role: reqData.role,
     has_commission: reqData.has_commission,
     has_salary: reqData.has_salary,
+    has_allowance: reqData.has_allowance,
+    blocked: reqData.blocked,
   });
 
   await ProfileInfo.create({
@@ -37,6 +40,13 @@ const signUp = async (reqData) => {
   if (reqData.has_salary) {
     await Salary.create({
       amount: reqData.salary_amount,
+      user_id: newUser.id,
+    });
+  }
+  if (reqData.has_allowance) {
+    await Allowance.create({
+      allowance_type: reqData.allowance_type,
+      amount: reqData.allowance_amount,
       user_id: newUser.id,
     });
   }
@@ -65,6 +75,7 @@ const login = async (reqData, res) => {
   const user = await Users.findOne({
     where: {
       email: email,
+      blocked: false,
     },
     include: [{ model: ProfileInfo }],
   });
@@ -89,12 +100,14 @@ const login = async (reqData, res) => {
 
   const token = jwt.sign(
     {
-      id: user._id,
+      id: user.id,
       name: user.name,
       email: user.email,
       designation: user.ProfileInfo.designation,
       role: user.role,
+      blocked: user.blocked,
       has_commission: user.has_commission,
+      has_allowance: user.has_allowance,
       has_salary: user.has_salary,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
@@ -142,7 +155,7 @@ const get = async (reqData, res) => {
     }
   }
   if (reqData.pageSize || reqData.page) {
-    const { role, name, email } = reqData;
+    const { name, email } = reqData;
 
     let whereClause = {};
     if (name) whereClause.name = { [Op.like]: `%${name}%` || "" };
@@ -169,6 +182,9 @@ const get = async (reqData, res) => {
         {
           model: CommissionRate,
         },
+        {
+          model: Allowance,
+        },
       ],
       offset,
       limit: pageSize,
@@ -191,6 +207,7 @@ const update = async (reqData, res) => {
   let parameter = "data";
   let commission;
   let salary;
+  let allowance;
 
   if (reqData) {
     const updatedUser = await Users.update(
@@ -201,6 +218,8 @@ const update = async (reqData, res) => {
         password: reqData.password,
         has_commission: reqData.has_commission,
         has_salary: reqData.has_salary,
+        has_allowance: reqData.has_allowance,
+        blocked: reqData.blocked,
         role: reqData.role,
       },
       { where: { id: reqData.id } }
@@ -245,6 +264,21 @@ const update = async (reqData, res) => {
         Salary.destroy({ where: { id: reqData.salaryId } });
       }
     }
+    if (reqData.has_allowance === true) {
+      allowance = await Allowance.upsert(
+        {
+          id: reqData.allowanceId,
+          amount: reqData.allowance_amount,
+          allowance_type: reqData.allowance_type,
+          user_id: reqData.id,
+        },
+        { where: { user_id: reqData.id } }
+      );
+    } else {
+      if (reqData.allowanceId) {
+        Allowance.destroy({ where: { id: reqData.allowanceId } });
+      }
+    }
 
     if (updatedUser && updatedProfileInfo) {
       return {
@@ -256,6 +290,7 @@ const update = async (reqData, res) => {
           profileInfo: updatedProfileInfo,
           commission: commission,
           salary: salary,
+          allowance: allowance,
         },
       };
     }
@@ -286,7 +321,13 @@ const update = async (reqData, res) => {
 const paranoid = async (reqData, res) => {
   let parameter = "id";
   if (reqData) {
-    const deletedUser = await Users.destroy({ where: { id: reqData } });
+    const deletedUser = await Allowance.destroy({
+      where: { user_id: reqData },
+    });
+    await ProfileInfo.destroy({ where: { user_id: reqData } });
+    await CommissionRate.destroy({ where: { user_id: reqData } });
+    await Salary.destroy({ where: { user_id: reqData } });
+    await Users.destroy({ where: { id: reqData } });
     if (deletedUser) {
       return {
         code: 200,

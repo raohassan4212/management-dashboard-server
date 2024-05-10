@@ -1,21 +1,17 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const attendanceController = require('../../controller/Attendence/attendenceController');
+const attendanceController = require("../../controller/Attendence/attendenceController");
 
 // Create attendance API
-router.post('/attendances', attendanceController.createAttendance);
+router.post("/create", attendanceController.create);
 
 // Update attendance API
-router.put('/attendances/updateattendance', attendanceController.updateAttendance);
+router.post("/update", attendanceController.update);
 
 // Delete attendance API
-router.delete('/attendances/:attendanceId', attendanceController.deleteAttendance);
-
-// Attendance By ID 
-router.get('/attendances/:attendanceId', attendanceController.getAttendanceById);
+router.delete("/:id", attendanceController.destroy);
 
 // Get All Attendances API
-router.get('/attendances', attendanceController.getAllAttendances);
-
+router.get("/get", attendanceController.get);
 
 module.exports = router;
