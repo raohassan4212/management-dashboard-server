@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const { db1 } = require("../../config/dbConnect");
+const { db1, db3 } = require("../../config/dbConnect");
 
 const Sale = db1.define(
   "Sales",
@@ -10,8 +10,11 @@ const Sale = db1.define(
       autoIncrement: true,
     },
     user_id: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: DataTypes.INTEGER,
+      references: {
+        model: "Users",
+        key: "id",
+      },
     },
     amount: {
       type: DataTypes.FLOAT,
