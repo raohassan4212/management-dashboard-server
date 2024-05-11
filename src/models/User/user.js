@@ -5,6 +5,7 @@ const PaymentMethod = require("../PaymentMethod/paymentMethod");
 const Salary = require("../Salary/salary");
 const CommissionRate = require("../CommissionRates/commissionRates");
 const ProfileInfo = require("../ProfileInfo/profileInfo");
+const Sale = require("../Sale/sale")
 
 const User = db1.define(
   "User",
@@ -54,5 +55,8 @@ User.hasOne(PaymentMethod, { foreignKey: "user_id" });
 User.hasOne(Salary, { foreignKey: "user_id" });
 User.hasOne(CommissionRate, { foreignKey: "user_id" });
 User.hasOne(ProfileInfo, { foreignKey: "user_id" });
+
+User.hasMany(Sale, { foreignKey: 'user_id' });
+Sale.belongsTo(User, { foreignKey: 'user_id' });
 
 module.exports = User;

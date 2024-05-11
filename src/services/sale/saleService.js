@@ -64,10 +64,17 @@ const getAll = async (page, pageSize) => {
   const offset = (page - 1) * pageSize;
   const limit = pageSize;
 
-  const { count, rows } = await Sale.findAndCountAll({
-    offset: offset,
-    limit: limit,
-  });
+  const isPaginationEnabled =
+    !isNaN(parseInt(page)) && !isNaN(parseInt(pageSize));
+
+  const options = isPaginationEnabled
+    ? {
+        offset: (page - 1) * pageSize,
+        limit: pageSize,
+      }
+    : {};
+
+  const { count, rows } = await Sale.findAndCountAll(options);
 
   if (rows && rows.length > 0) {
     return {
