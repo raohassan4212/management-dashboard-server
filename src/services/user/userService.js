@@ -109,6 +109,7 @@ const login = async (reqData, res) => {
       has_commission: user.has_commission,
       has_allowance: user.has_allowance,
       has_salary: user.has_salary,
+      designation: user?.ProfileInfo.designation,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     },

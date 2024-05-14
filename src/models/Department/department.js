@@ -1,11 +1,10 @@
 const { DataTypes } = require("sequelize");
 const { db1 } = require("../../config/dbConnect");
 
-const User = require("../User/user");
-const Department = require("../Department/Department");
+const Unit = require("../Unit/unit");
 
-const Unit = db1.define(
-  "Unit",
+const Department = db1.define(
+  "Department",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -18,10 +17,11 @@ const Unit = db1.define(
     },
   },
   {
-    tableName: "Units",
+    tableName: "Departments",
     freezeTableName: true,
   }
 );
-Unit.belongsTo(Department, { foreignKey: "depart_id" });
 
-module.exports = Unit;
+Department.hasMany(Unit, { foreignKey: "depart_id" });
+
+module.exports = Department;

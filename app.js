@@ -8,10 +8,12 @@ const sequelize = require("./src/config/dbConnect");
 
 const userRoutes = require("./src/route/user/userRoutes");
 const profileRoutes = require("./src/route/profile/profileRoutes");
-const taskRoutes = require("./src/route/task/taskRoutes");
+const ticketRoutes = require("./src/route/ticket/ticketRoutes");
 const projectRoute = require("./src/route/project/projectRoute");
 const attendenceRoute = require("./src/route/attendence/attendenceRoute");
-const reportRoute = require('./src/route/report/reportRoute')
+const reportRoute = require("./src/route/report/reportRoute");
+const unitRoute = require("./src/route/report/reportRoute");
+const departmentRoute = require("./src/route/report/reportRoute");
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -29,11 +31,10 @@ sequelize.db1
 
 app.use("/public/api/v1/user/", userRoutes);
 app.use("/public/api/v1/profile/", profileRoutes);
-app.use("/public/api/v1/task/", taskRoutes);
+app.use("/public/api/v1/ticket/", ticketRoutes);
 app.use("/public/api/v1/project/", projectRoute);
 app.use("/public/api/v1/attendence/", attendenceRoute);
 app.use("/public/api/v1/report/", reportRoute);
-
 
 app.listen(PORT, () => {
   console.log(`Server is up on port ${PORT}`);

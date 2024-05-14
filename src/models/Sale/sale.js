@@ -13,16 +13,16 @@ const Sale = db1.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     amount: {
       type: DataTypes.FLOAT,
       allowNull: false,
     },
     description: {
       type: DataTypes.STRING,
-      allowNull: false,
-    },
-    date: {
-      type: DataTypes.DATE,
       allowNull: false,
     },
     sale_type: {
@@ -48,6 +48,18 @@ const Sale = db1.define(
     },
     total: {
       type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    day: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    month: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    date: {
+      type: DataTypes.DATE,
       allowNull: false,
     },
   },

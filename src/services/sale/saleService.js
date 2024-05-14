@@ -63,7 +63,7 @@ const paranoid = async (id) => {
 const getAll = async (page, pageSize) => {
   const offset = (page - 1) * pageSize;
   const limit = pageSize;
-
+  
   const { count, rows } = await Sale.findAndCountAll({
     offset: offset,
     limit: limit,

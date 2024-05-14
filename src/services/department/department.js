@@ -1,11 +1,11 @@
 const { Op } = require("sequelize");
-const Attendance = require("../../models/Attendance/attendance");
+const Department = require("../../models/Department/Department");
 const User = require("../../models/User/user");
 const moment = require("moment");
 
 const createAttendance = async (attendanceData) => {
   try {
-    const newAttendance = await Attendance.create(attendanceData);
+    const newAttendance = await Department.create(attendanceData);
     if (newAttendance) {
       return {
         code: 200,
