@@ -21,6 +21,10 @@ const Sale = db1.define(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+    code:{
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     description: {
       type: DataTypes.STRING,
       allowNull: false,

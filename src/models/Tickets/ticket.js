@@ -18,6 +18,10 @@ const Ticket = db1.define(
       allowNull: false,
       unique: true,
     },
+    code:{
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     approved: {
       type: DataTypes.BOOLEAN,
       allowNull: false,

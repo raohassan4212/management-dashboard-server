@@ -25,6 +25,10 @@ const Report = db1.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    code:{
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     period_end: {
       type: DataTypes.DATE,
       allowNull: false,
