@@ -2,6 +2,7 @@ const { DataTypes } = require("sequelize");
 const { db1 } = require("../../config/dbConnect");
 
 const Unit = require("../Unit/unit");
+const User = require("../User/user");
 
 const Department = db1.define(
   "Department",
@@ -22,6 +23,6 @@ const Department = db1.define(
   }
 );
 
-Department.hasMany(Unit, { foreignKey: "depart_id" });
+Department.hasMany(Unit, { foreignKey: "depart_id" }); 
 
 module.exports = Department;

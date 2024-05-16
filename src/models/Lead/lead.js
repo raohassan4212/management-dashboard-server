@@ -9,9 +9,23 @@ const Lead = db1.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    post: {
+    name: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    email: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: true,
       validate: {
         notEmpty: true,
       },
@@ -19,6 +33,13 @@ const Lead = db1.define(
     address: {
       type: DataTypes.STRING,
       allowNull: true,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    post: {
+      type: DataTypes.STRING,
+      allowNull: false,
       validate: {
         notEmpty: true,
       },
@@ -41,27 +62,6 @@ const Lead = db1.define(
         notEmpty: true,
       },
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    phone: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      validate: {
-        notEmpty: true,
-      },
-    },
     source: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -69,14 +69,21 @@ const Lead = db1.define(
         notEmpty: true,
       },
     },
-    comments: {
+    source_link: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    source_link: {
+    type: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    comments: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {

@@ -9,9 +9,11 @@ const Salary = require("../../models/Salary/salary");
 const Allowance = require("../../models/Allowance/allowance");
 
 const signUp = async (reqData) => {
+  const serial = Math.floor(100 + Math.random() * 9000);
   let salt = bcrypt.genSaltSync(10);
   let hash = bcrypt.hashSync(reqData.password, salt);
   let newUser = await Users.create({
+    serial: `SR-${serial}`,
     name: reqData.name,
     email: reqData.email,
     password: hash,
@@ -68,13 +70,13 @@ const checkUser = async (email) => {
 };
 
 const login = async (reqData, res) => {
-  const { email, password } = reqData;
+  const { serial, password } = reqData;
   const jwtToken =
     "qwertyuiodoasjrfbheskfhdsxcvboiswueorghbfo3urbn23o9h9hjklzxcvbnm";
 
   const user = await Users.findOne({
     where: {
-      email: email,
+      serial: serial,
       blocked: false,
     },
     include: [{ model: ProfileInfo }],
@@ -103,6 +105,7 @@ const login = async (reqData, res) => {
       id: user.id,
       name: user.name,
       email: user.email,
+      serial: user.serial,
       designation: user.ProfileInfo.designation,
       role: user.role,
       blocked: user.blocked,
@@ -156,11 +159,12 @@ const get = async (reqData, res) => {
     }
   }
   if (reqData.pageSize || reqData.page) {
-    const { name, email } = reqData;
+    const { name, email, serial } = reqData;
 
     let whereClause = {};
     if (name) whereClause.name = { [Op.like]: `%${name}%` || "" };
     if (email) whereClause.email = { [Op.like]: `%${email}%` || "" };
+    if (serial) whereClause.serial = { [Op.like]: `%${serial}%` || "" };
 
     const page = parseInt(reqData.page) || 0;
     const pageSize = parseInt(reqData.pageSize) || 10;
@@ -213,6 +217,7 @@ const update = async (reqData, res) => {
   if (reqData) {
     const updatedUser = await Users.update(
       {
+        serial: reqData.serial,
         id: reqData.id,
         name: reqData.name,
         email: reqData.email,

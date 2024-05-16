@@ -12,8 +12,8 @@ const ticketRoutes = require("./src/route/ticket/ticketRoutes");
 const projectRoute = require("./src/route/project/projectRoute");
 const attendenceRoute = require("./src/route/attendence/attendenceRoute");
 const reportRoute = require("./src/route/report/reportRoute");
-const unitRoute = require("./src/route/report/reportRoute");
-const departmentRoute = require("./src/route/report/reportRoute");
+const unitRoute = require("./src/route/unit/unitRoute");
+const departmentRoute = require("./src/route/department/departmentRoute");
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -34,6 +34,8 @@ app.use("/public/api/v1/profile/", profileRoutes);
 app.use("/public/api/v1/ticket/", ticketRoutes);
 app.use("/public/api/v1/project/", projectRoute);
 app.use("/public/api/v1/attendence/", attendenceRoute);
+app.use("/public/api/v1/department/", departmentRoute);
+app.use("/public/api/v1/unit/", unitRoute);
 app.use("/public/api/v1/report/", reportRoute);
 
 app.listen(PORT, () => {

@@ -6,12 +6,12 @@ const errorLogger = require("../../functions/Logger");
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { serial, password } = req.body;
+    if (!serial || !password) {
       return res.status(401).json({
         code: 401,
         success: false,
-        message: "Email or Password is missing: email or password",
+        message: "Serial ID or Password is missing: serial or password",
         data: {},
       });
     }

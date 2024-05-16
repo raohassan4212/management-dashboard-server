@@ -7,6 +7,7 @@ const ProfileInfo = require("../ProfileInfo/profileInfo");
 const Attendance = require("../Attendance/attendance");
 const Allowance = require("../Allowance/allowance");
 const Ticket = require("../Tickets/ticket");
+const Lead = require("../Lead/lead");
 
 const User = db1.define(
   "User",
@@ -15,6 +16,10 @@ const User = db1.define(
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
+    },
+    serial: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     name: {
       type: DataTypes.STRING,
@@ -65,7 +70,6 @@ User.hasMany(Attendance, { foreignKey: "user_id" });
 User.hasOne(Salary, { foreignKey: "user_id" });
 User.hasOne(CommissionRate, { foreignKey: "user_id" });
 User.hasOne(ProfileInfo, { foreignKey: "user_id" });
-
 User.hasMany(Ticket, { foreignKey: "user_id" });
 
 Attendance.belongsTo(User, { foreignKey: "user_id" });

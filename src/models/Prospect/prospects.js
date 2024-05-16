@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { db1 } = require("../../config/dbConnect");
+const Project = require("../Project/project");
 
 const Prospect = db1.define(
   "Prospect",
@@ -70,6 +71,14 @@ const Prospect = db1.define(
       allowNull: false,
       validate: {
         notEmpty: true,
+      },
+    },
+    project_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "Projects",
+        key: "id",
       },
     },
   },
