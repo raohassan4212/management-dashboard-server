@@ -1,7 +1,7 @@
 const { Sequelize } = require("sequelize");
 
 //database connection 01
-const db1 = new Sequelize("defaultdb", "gamer", "ovz1sSRq332plgy18SJuFg", {
+const db1 = new Sequelize("defaultdb", "gamer", "1cLG1woYcJo13LHc8tkRxA", {
   host: "raloxcrm-server-4599.7s5.aws-ap-south-1.cockroachlabs.cloud",
   dialect: "postgres",
   port: 26257,
@@ -10,7 +10,7 @@ const db1 = new Sequelize("defaultdb", "gamer", "ovz1sSRq332plgy18SJuFg", {
   },
   logging: false,
 });
-
+// postgresql://gamer:1cLG1woYcJo13LHc8tkRxA@raloxcrm-server-4599.7s5.aws-ap-south-1.cockroachlabs.cloud:26257/defaultdb?sslmode=verify-full
 //database connection 02
 const db2 = new Sequelize(
   "defaultdb",

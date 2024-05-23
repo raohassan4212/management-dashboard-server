@@ -1,19 +1,24 @@
 const { DataTypes } = require("sequelize");
 const { db1 } = require("../../config/dbConnect");
 
-// : DataTypes.ENUM("fixed_salary", "commission","allowance"),
-const PaymentMethod = db1.define(
-  "PaymentMethod",
+const User = require("../User/user");
+
+const Configuration = db1.define(
+  "Configuration",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    type: {
-      type: DataTypes.STRING,
-      defaultValue: "commission",
-      allowNull: false,
+    status: {
+      type: DataTypes.JSON,
+    },
+    designation: {
+      type: DataTypes.JSON,
+    },
+    platforms: {
+      type: DataTypes.JSON,
     },
     createdAt: {
       type: DataTypes.DATE,
@@ -25,9 +30,9 @@ const PaymentMethod = db1.define(
     },
   },
   {
-    tableName: "PaymentMethods",
+    tableName: "Configurations",
     freezeTableName: true,
   }
 );
 
-module.exports = PaymentMethod;
+module.exports = Configuration;

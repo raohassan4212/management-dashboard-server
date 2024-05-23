@@ -1,8 +1,8 @@
 const { DataTypes } = require("sequelize");
-const {db1} = require("../../config/dbConnect");
+const { db1 } = require("../../config/dbConnect");
 
-const Task = db1.define(
-  "Task",
+const Ticket = db1.define(
+  "Ticket",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -16,29 +16,32 @@ const Task = db1.define(
     description: {
       type: DataTypes.TEXT,
       allowNull: false,
-      unique: true,
     },
-    due_date: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    status: {
+    serial: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "Open",
-      validate: {
-        isIn: ["Open", "In Progress", "Completed"],
-      },
     },
-    last_updated: {
-      type: DataTypes.STRING,
+    approved: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
+    },
+    approved_by: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    closed: {
+      type: DataTypes.BOOLEAN,
+      allowNull: true,
+    },
+    created_by: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
   },
   {
-    tableName: "Tasks",
+    tableName: "Tickets",
     freezeTableName: true,
   }
 );
 
-module.exports = Task;
+module.exports = Ticket;

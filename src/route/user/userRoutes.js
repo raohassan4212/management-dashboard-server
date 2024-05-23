@@ -15,4 +15,6 @@ router.post("/update", userController.update);
 //*User Delete Api */
 router.delete("/:id/delete", userController.paranoid);
 
+router.get("/verification", userController.verify, userController.verifyToken);
+
 module.exports = router;

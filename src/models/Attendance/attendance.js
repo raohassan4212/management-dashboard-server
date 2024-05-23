@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const {db1} = require("../../config/dbConnect");
+const { db1 } = require("../../config/dbConnect");
 
 const Attendance = db1.define(
   "Attendances",
@@ -14,12 +14,12 @@ const Attendance = db1.define(
       allowNull: false,
     },
     clock_in: {
-      type: DataTypes.DATE,
+      type: DataTypes.TIME,
       allowNull: false,
       unique: true,
     },
     clock_out: {
-      type: DataTypes.DATE,
+      type: DataTypes.TIME,
       allowNull: false,
     },
     lng: {
@@ -29,6 +29,13 @@ const Attendance = db1.define(
     lat: {
       type: DataTypes.FLOAT,
       allowNull: false,
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: "Users",
+        key: "id",
+      },
     },
   },
 

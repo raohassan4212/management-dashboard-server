@@ -9,23 +9,20 @@ const Sale = db1.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    user_id: {
-      type: DataTypes.INTEGER,
-      references: {
-        model: "Users",
-        key: "id",
-      },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     amount: {
       type: DataTypes.FLOAT,
       allowNull: false,
     },
-    description: {
+    code: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    date: {
-      type: DataTypes.DATE,
+    description: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     sale_type: {
@@ -33,24 +30,49 @@ const Sale = db1.define(
       allowNull: false,
       defaultValue: "Upfront",
     },
-    platform: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    platform_id: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    client_link: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    client_username: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     total: {
       type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    department: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: "Sales",
+    },
+    user_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "Users",
+        key: "id",
+      },
+    },
+    unit_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "Units",
+        key: "id",
+      },
+    },
+    prospect_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "Prospects",
+        key: "id",
+      },
+    },
+    day: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    month: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    date: {
+      type: DataTypes.DATE,
       allowNull: false,
     },
   },

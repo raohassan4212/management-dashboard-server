@@ -1,30 +1,28 @@
-const attendanceService = require("../../services/attendence/attendenceService");
-const attendanceValidation = require("../../validation/attendence/attendenceValidation");
+const UnitService = require("../../services/Unit/UnitService");
+// const UnitValidation = require("../../validation/attendence/attendenceValidation");
 const errorLogger = require("../../functions/Logger");
 
 const create = async (req, res) => {
   try {
-    const validatedAttendance = await attendanceValidation.validate(req.body);
-    const newAttendance = await attendanceService.createAttendance(
-      validatedAttendance
-    );
+    // const validatedUnit = await UnitValidation.validate(req.body);
+    const newUnit = await UnitService.createUnit(req.body);
     res.status(201).json({
       success: true,
-      message: "Attendance created successfully",
-      data: newAttendance,
+      message: "Unit created successfully",
+      data: newUnit,
     });
   } catch (error) {
     errorLogger(
       "POST",
       500,
       error,
-      "ATTENDANCE",
+      "Unit",
       "1",
-      "Error creating attendance"
+      "Error creating Unit"
     );
     res.status(500).json({
       success: false,
-      message: "Failed to create attendance",
+      message: "Failed to create Unit",
       error: error.message,
     });
   }
@@ -32,7 +30,7 @@ const create = async (req, res) => {
 
 const get = async (req, res) => {
   try {
-    const response = await attendanceService.getAllAttendances(req.query);
+    const response = await UnitService.getAllUnits(req.query);
     return res.status(response.code).json({
       success: response.code,
       message: response.message,
@@ -45,13 +43,13 @@ const get = async (req, res) => {
       "GET",
       500,
       error,
-      "ATTENDANCE",
+      "Unit",
       "1",
-      "Error retrieving attendances"
+      "Error retrieving Units"
     );
     res.status(500).json({
       success: false,
-      message: "Failed to retrieve attendances",
+      message: "Failed to retrieve Units",
       error: error.message,
     });
   }
@@ -59,7 +57,7 @@ const get = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const response = await attendanceService.updateAttendance(req.body);
+    const response = await UnitService.updateUnit(req.body);
 
     res.status(200).json({
       success: response.success,
@@ -71,13 +69,13 @@ const update = async (req, res) => {
       "UPDATE",
       500,
       error,
-      "ATTENDANCE",
+      "Unit",
       "1",
-      "Error updating attendance"
+      "Error updating Unit"
     );
     res.status(500).json({
       success: false,
-      message: "Failed to update attendance",
+      message: "Failed to update Unit",
       error: error.message,
     });
   }
@@ -86,28 +84,27 @@ const update = async (req, res) => {
 const destroy = async (req, res) => {
   try {
     const { id } = req.params;
-    const deletedAttendance = await attendanceService.deleteAttendance(id);
+    const deletedUnit = await UnitService.deleteUnit(id);
 
     res.status(200).json({
       success: true,
-      message: "Attendance deleted successfully",
-      data: deletedAttendance,
+      message: "Unit deleted successfully",
+      data: deletedUnit,
     });
   } catch (error) {
     errorLogger(
-      "DELETE_ATTENDANCE",
+      "DELETE",
       500,
       error,
-      "ATTENDANCE",
+      "Unit",
       "1",
-      "Error deleting attendance"
+      "Error deleting Unit"
     );
     res.status(500).json({
       success: false,
-      message: "Failed to delete attendance",
+      message: "Failed to delete Unit",
       error: error.message,
     });
-    W;
   }
 };
 

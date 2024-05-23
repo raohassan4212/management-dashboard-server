@@ -6,12 +6,12 @@ const errorLogger = require("../../functions/Logger");
 
 const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { serial, password } = req.body;
+    if (!serial || !password) {
       return res.status(401).json({
         code: 401,
         success: false,
-        message: "Email or Password is missing: email or password",
+        message: "Serial ID or Password is missing: serial or password",
         data: {},
       });
     }
@@ -216,4 +216,33 @@ const paranoid = async (req, res) => {
   }
 };
 
-module.exports = { login, signUp, update, paranoid, get };
+const verifyToken = (req, res) => {
+  res.status(200).json({ status: "success", isAuthorized: true });
+};
+
+const verify = (req, res, next) => {
+  const token = req.headers["x-access-token"]?.split("Split")[1];
+  if (token) {
+    //token recieved this condition executes
+    jwt.verify(
+      token,
+      "qwertyuiodoasjrfbheskfhdsxcvboiswueorghbfo3urbn23o9h9hjklzxcvbnm",
+      (err, decode) => {
+        if (err) {
+          return res.json({
+            status: "error",
+            isAuthorized: false,
+            message: "error-occured",
+          });
+        }
+        req.user = {};
+        req.user.id = decode.id;
+        next();
+      }
+    );
+  } else {
+    res.json({ status: "error", message: "token-not-verified" });
+  }
+};
+
+module.exports = { login, signUp, update, paranoid, get, verify, verifyToken };
