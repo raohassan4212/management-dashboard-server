@@ -19,7 +19,7 @@ const Configuration = db1.define(
     },
     platforms: {
       type: DataTypes.JSON,
-    },
+    },  
     createdAt: {
       type: DataTypes.DATE,
       field: "created_at",

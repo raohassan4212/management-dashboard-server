@@ -9,9 +9,30 @@ const Lead = db1.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    name: {
+    title: {
       type: DataTypes.STRING,
       allowNull: true,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    query: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    post: {
+      type: DataTypes.STRING,
+      allowNull: false,
       validate: {
         notEmpty: true,
       },
@@ -30,21 +51,21 @@ const Lead = db1.define(
         notEmpty: true,
       },
     },
-    address: {
-      type: DataTypes.STRING,
-      allowNull: true,
-      validate: {
-        notEmpty: true,
-      },
-    },
-    post: {
+    status: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
     },
-    code: {
+    type: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    serial: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -76,19 +97,30 @@ const Lead = db1.define(
         notEmpty: true,
       },
     },
-    type: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      },
-    },
     comments: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
       },
+    },
+    day: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    month: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    date: {
+      type: DataTypes.DATE,
+      allowNull: false,
     },
   },
   {

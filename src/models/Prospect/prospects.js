@@ -10,6 +10,13 @@ const Prospect = db1.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    serial: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,

@@ -24,5 +24,6 @@ const Department = db1.define(
 );
 
 Department.hasMany(Unit, { foreignKey: "depart_id" }); 
+Unit.belongsTo(Department, { foreignKey: "depart_id" }); 
 
 module.exports = Department;

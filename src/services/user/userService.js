@@ -7,6 +7,7 @@ const ProfileInfo = require("../../models/ProfileInfo/profileInfo");
 const CommissionRate = require("../../models/CommissionRates/commissionRates");
 const Salary = require("../../models/Salary/salary");
 const Allowance = require("../../models/Allowance/allowance");
+const Unit = require("../../models/Unit/unit");
 
 const signUp = async (reqData) => {
   const serial = Math.floor(100 + Math.random() * 9000);
@@ -22,6 +23,7 @@ const signUp = async (reqData) => {
     has_salary: reqData.has_salary,
     has_allowance: reqData.has_allowance,
     blocked: reqData.blocked,
+    unit_id: reqData.unit_id || null,
   });
 
   await ProfileInfo.create({
@@ -159,12 +161,13 @@ const get = async (reqData, res) => {
     }
   }
   if (reqData.pageSize || reqData.page) {
-    const { name, email, serial } = reqData;
+    const { name, email, serial, unitId } = reqData;
 
     let whereClause = {};
     if (name) whereClause.name = { [Op.like]: `%${name}%` || "" };
     if (email) whereClause.email = { [Op.like]: `%${email}%` || "" };
     if (serial) whereClause.serial = { [Op.like]: `%${serial}%` || "" };
+    if (unitId) whereClause.unit_id = unitId || "";
 
     const page = parseInt(reqData.page) || 0;
     const pageSize = parseInt(reqData.pageSize) || 10;
@@ -189,6 +192,9 @@ const get = async (reqData, res) => {
         },
         {
           model: Allowance,
+        },
+        {
+          model: Unit,
         },
       ],
       offset,
@@ -227,6 +233,7 @@ const update = async (reqData, res) => {
         has_allowance: reqData.has_allowance,
         blocked: reqData.blocked,
         role: reqData.role,
+        unit_id: reqData.unit_id,
       },
       { where: { id: reqData.id } }
     );
@@ -361,4 +368,28 @@ const paranoid = async (reqData, res) => {
   }
 };
 
-module.exports = { signUp, checkUser, login, update, get, paranoid };
+const verifyToken = (token, res, next) => {
+  const jwtToken =
+    "qwertyuiodoasjrfbheskfhdsxcvboiswueorghbfo3urbn23o9h9hjklzxcvbnm";
+
+  if (token) {
+    jwt.verify(token, jwtToken, (err, user) => {
+      if (err) {
+        console.log(err);
+        throw new Error(err);
+      }
+    });
+  } else {
+    res.json({ message: "Incorrect Token Given", isLoggedIn: false });
+  }
+};
+
+module.exports = {
+  signUp,
+  checkUser,
+  login,
+  update,
+  get,
+  paranoid,
+  verifyToken,
+};

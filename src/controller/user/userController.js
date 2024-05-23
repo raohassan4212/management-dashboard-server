@@ -217,32 +217,10 @@ const paranoid = async (req, res) => {
 };
 
 const verifyToken = (req, res) => {
-  res.status(200).json({ status: "success", isAuthorized: true });
-};
-
-const verify = (req, res, next) => {
-  const token = req.headers["x-access-token"]?.split("Split")[1];
-  if (token) {
-    //token recieved this condition executes
-    jwt.verify(
-      token,
-      "qwertyuiodoasjrfbheskfhdsxcvboiswueorghbfo3urbn23o9h9hjklzxcvbnm",
-      (err, decode) => {
-        if (err) {
-          return res.json({
-            status: "error",
-            isAuthorized: false,
-            message: "error-occured",
-          });
-        }
-        req.user = {};
-        req.user.id = decode.id;
-        next();
-      }
-    );
-  } else {
-    res.json({ status: "error", message: "token-not-verified" });
+  if (req.user) {
+    return res.status(200).json({ message: "Token is valid", user: req.user });
   }
+  return res.status(401).json({ error: "Unauthorized" });
 };
 
-module.exports = { login, signUp, update, paranoid, get, verify, verifyToken };
+module.exports = { login, signUp, update, paranoid, get, verifyToken };

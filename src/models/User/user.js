@@ -71,7 +71,9 @@ User.hasOne(Salary, { foreignKey: "user_id" });
 User.hasOne(CommissionRate, { foreignKey: "user_id" });
 User.hasOne(ProfileInfo, { foreignKey: "user_id" });
 User.hasMany(Ticket, { foreignKey: "user_id" });
+User.hasMany(Lead, { foreignKey: "user_id" });
 
+Lead.belongsTo(User, { foreignKey: "user_id" });
 Attendance.belongsTo(User, { foreignKey: "user_id" });
 
 module.exports = User;

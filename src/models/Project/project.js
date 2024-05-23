@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { db1 } = require("../../config/dbConnect");
 const Prospect = require("../Prospect/prospects");
+const Sale = require("../Sale/sale");
 
 const Project = db1.define(
   "Projects",
@@ -19,7 +20,7 @@ const Project = db1.define(
       allowNull: false,
       unique: true,
     },
-    code: {
+    serial: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -35,15 +36,19 @@ const Project = db1.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
+    deadline: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
     status: {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "Open",
-      validate: {
+      validate: {      
         isIn: ["Open", "In Progress", "Completed"],
       },
     },
-    pdf_link: {
+    doc_link: {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "",
@@ -89,5 +94,6 @@ const Project = db1.define(
 );
 
 Project.hasMany(Prospect, { foreignKey: "project_id" });
+Project.hasMany(Sale, { foreignKey: "sale_id" });
 
 module.exports = Project;

@@ -1,16 +1,30 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const auth = (req, res, next) => {
-  const jwt_token = req.cookies.JWT_token;
+const userService = require("../services/user/userService");
 
-  if (jwt_token) {
-    jwt.verify(jwt_token, process.env.TOKEN_SECRET, (err, user) => {
-      if (err) {
-        throw new Error(err);
-      }
-      next();
-    });
+const auth = async (req, res) => {
+  const token = req.headers["x-access-token"];
+
+  if (token) {
+    try {
+      const user = await userService.verifyToken(token);
+
+      req.user = user; // Attach the user information to the request
+
+      return res.status(200).json({
+        success: true,
+        status: 200,
+        message: "user verified",
+      });
+    } catch (err) {
+      return res.json({
+        success: false,
+        status: 301,
+        message: "Token is not valid",
+        error: err,
+      }); 
+    }
   } else {
     throw new Error("user not found");
   }

@@ -3,6 +3,7 @@ const router = express.Router();
 
 //*UserController Import */
 const userController = require("../../controller/user/userController");
+const auth = require("../../middleware/auth");
 
 //*User Signup Api */
 router.post("/signup", userController.signUp);
@@ -14,7 +15,7 @@ router.get("/get", userController.get);
 router.post("/update", userController.update);
 //*User Delete Api */
 router.delete("/:id/delete", userController.paranoid);
-
-router.get("/verification", userController.verify, userController.verifyToken);
+//*User Verification Api */
+router.get("/verification", auth, userController.verifyToken);
 
 module.exports = router;

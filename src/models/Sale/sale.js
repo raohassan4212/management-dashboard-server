@@ -17,7 +17,7 @@ const Sale = db1.define(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
-    code: {
+    serial: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -33,11 +33,6 @@ const Sale = db1.define(
     total: {
       type: DataTypes.FLOAT,
       allowNull: false,
-    },
-    department: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: "Sales",
     },
     user_id: {
       type: DataTypes.INTEGER,
@@ -56,6 +51,30 @@ const Sale = db1.define(
       },
     },
     prospect_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "Prospects",
+        key: "id",
+      },
+    },
+    prospect_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "Prospects",
+        key: "id",
+      },
+    },
+    project_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: "Projects",
+        key: "id",
+      },
+    },
+    lead_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
