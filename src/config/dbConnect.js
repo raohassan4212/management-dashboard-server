@@ -27,4 +27,14 @@ const db2 = new Sequelize(
   }
 );
 
-module.exports = { db1, db2 };
+const db3 = new Sequelize("defaultdb", "rao", "UAv1dS0HmBkbNxyXmqR77A", {
+  host: "dashboard-db-6677.6xw.aws-ap-southeast-1.cockroachlabs.cloud",
+  dialect: "postgres",
+  port: 26257,
+  dialectOptions: {
+    ssl: {},
+  },
+  logging: false,
+});
+
+module.exports = { db1, db2, db3 };

@@ -9,30 +9,26 @@ const Report = db1.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    day: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    month: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    year: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    period_start: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    code:{
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    period_end: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
+    // day: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    // },
+    // month: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    // },
+    // year: {
+    //   type: DataTypes.STRING,
+    //   allowNull: false,
+    // },
+    // period_start: {
+    //   type: DataTypes.DATE,
+    //   allowNull: false,
+    // },
+    // period_end: {
+    //   type: DataTypes.DATE,
+    //   allowNull: false,
+    // },
     total_sales: {
       type: DataTypes.FLOAT,
       allowNull: false,
@@ -45,10 +41,10 @@ const Report = db1.define(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
-    is_archived: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
+    // is_archived: {
+    //   type: DataTypes.BOOLEAN,
+    //   allowNull: false,
+    // },
   },
   {
     tableName: "Reports",

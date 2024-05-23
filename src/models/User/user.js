@@ -8,6 +8,7 @@ const Attendance = require("../Attendance/attendance");
 const Allowance = require("../Allowance/allowance");
 const Ticket = require("../Tickets/ticket");
 const Lead = require("../Lead/lead");
+const Sale = require("../Sale/sale")
 
 const User = db1.define(
   "User",
@@ -73,5 +74,8 @@ User.hasOne(ProfileInfo, { foreignKey: "user_id" });
 User.hasMany(Ticket, { foreignKey: "user_id" });
 
 Attendance.belongsTo(User, { foreignKey: "user_id" });
+
+User.hasMany(Sale, { foreignKey: 'user_id' });
+Sale.belongsTo(User, { foreignKey: 'user_id' });
 
 module.exports = User;
