@@ -15,6 +15,8 @@ const reportRoute = require("./src/route/report/reportRoute");
 const unitRoute = require("./src/route/unit/unitRoute");
 const leadRoute = require("./src/route/lead/leadRoute");
 const departmentRoute = require("./src/route/department/departmentRoute");
+const saleRoute = require("./src/route/sale/saleRoutes");
+const { calculateTolalSaleProfit } = require("./src/utils/cron.job");
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -30,6 +32,8 @@ sequelize.db1
 //   .then(() => console.log("DB:2 Synced"))
 //   .catch((err) => console.error("Failed to sync DB:", err));
 
+calculateTolalSaleProfit();
+
 app.use("/public/api/v1/user/", userRoutes);
 app.use("/public/api/v1/profile/", profileRoutes);
 app.use("/public/api/v1/ticket/", ticketRoutes);
@@ -39,6 +43,7 @@ app.use("/public/api/v1/attendence/", attendenceRoute);
 app.use("/public/api/v1/department/", departmentRoute);
 app.use("/public/api/v1/unit/", unitRoute);
 app.use("/public/api/v1/report/", reportRoute);
+app.use("/public/api/v1/sale/", saleRoute);
 
 
 app.listen(PORT, () => {

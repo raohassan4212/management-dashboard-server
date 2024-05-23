@@ -16,9 +16,8 @@ const Ticket = db1.define(
     description: {
       type: DataTypes.TEXT,
       allowNull: false,
-      unique: true,
     },
-    code:{
+    serial: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -28,6 +27,10 @@ const Ticket = db1.define(
     },
     approved_by: {
       type: DataTypes.STRING,
+      allowNull: true,
+    },
+    closed: {
+      type: DataTypes.BOOLEAN,
       allowNull: true,
     },
     created_by: {
