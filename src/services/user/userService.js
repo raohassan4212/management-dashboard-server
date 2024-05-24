@@ -75,7 +75,6 @@ const login = async (reqData, res) => {
   const { serial, password } = reqData;
   const jwtToken =
     "qwertyuiodoasjrfbheskfhdsxcvboiswueorghbfo3urbn23o9h9hjklzxcvbnm";
-
   const user = await Users.findOne({
     where: {
       serial: serial,

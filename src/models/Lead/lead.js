@@ -9,6 +9,13 @@ const Lead = db1.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    potential: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      validate: {
+        notEmpty: true,
+      },
+    },
     title: {
       type: DataTypes.STRING,
       allowNull: true,
@@ -33,6 +40,13 @@ const Lead = db1.define(
     post: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        notEmpty: true,
+      },
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: true,
       validate: {
         notEmpty: true,
       },

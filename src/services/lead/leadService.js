@@ -23,17 +23,20 @@ const create = async (leadData) => {
 };
 
 const get = async (reqData) => {
-  const { id, status, type, date, user_id, serial, unit_id } = reqData;
-
+  const { id, status, type, month, user_id, serial, unit_id, potential } =
+    reqData;
+  console.log(reqData);
   let whereClause = {};
 
   if (id) whereClause.id = id || "";
   if (user_id) whereClause.user_id = user_id || "";
   if (unit_id) whereClause.unit_id = unit_id || "";
-  if (date) whereClause.date = moment.utc(date).toISOString();
-  if (status) whereClause.status = { [Op.like]: `%${status}%` || "" };
-  if (type) whereClause.type = { [Op.like]: `%${type}%` || "" };
-  if (serial) whereClause.serial = { [Op.like]: `%${serial}%` || "" };
+  // if (date) whereClause.date = moment.utc(date).toISOString();
+  if (month) whereClause.month = month;
+  if (status) whereClause.status = status;
+  if (type) whereClause.type = type;
+  if (serial) whereClause.serial = serial;
+  if (potential) whereClause.potential = potential;
 
   const page = parseInt(reqData.page) || 0;
   const pageSize = parseInt(reqData.pageSize) || 10;
@@ -73,7 +76,7 @@ const get = async (reqData) => {
 };
 
 const update = async (reqData) => {
-  console.log(reqData,"eq");
+  console.log(reqData, "eq");
   if (!reqData) {
     return {
       code: 304,
