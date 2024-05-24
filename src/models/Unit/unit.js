@@ -38,6 +38,7 @@ const Unit = db1.define(
 Unit.hasMany(User, { foreignKey: "unit_id" });
 User.belongsTo(Unit, { foreignKey: "unit_id" });
 Unit.hasMany(Sale, { foreignKey: "unit_id" });
+Sale.belongsTo(Unit, { foreignKey: "unit_id" });
 Unit.hasMany(Project, { foreignKey: "unit_id" });
 Unit.hasMany(Lead, { foreignKey: "unit_id" });
 Lead.belongsTo(Unit, { foreignKey: "unit_id" });

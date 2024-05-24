@@ -9,7 +9,7 @@ const Sale = db1.define(
       primaryKey: true,
       autoIncrement: true,
     },
-    title: {
+    description: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -21,66 +21,18 @@ const Sale = db1.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    description: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     sale_type: {
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "Upfront",
     },
+    image: {
+      type: DataTypes.JSON,
+      allowNull: false,
+    },
     total: {
       type: DataTypes.FLOAT,
       allowNull: false,
-    },
-    user_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Users",
-        key: "id",
-      },
-    },
-    unit_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Units",
-        key: "id",
-      },
-    },
-    prospect_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Prospects",
-        key: "id",
-      },
-    },
-    prospect_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Prospects",
-        key: "id",
-      },
-    },
-    project_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Projects",
-        key: "id",
-      },
-    },
-    lead_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Prospects",
-        key: "id",
-      },
     },
     day: {
       type: DataTypes.STRING,

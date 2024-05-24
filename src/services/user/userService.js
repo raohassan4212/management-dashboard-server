@@ -14,7 +14,7 @@ const signUp = async (reqData) => {
   let salt = bcrypt.genSaltSync(10);
   let hash = bcrypt.hashSync(reqData.password, salt);
   let newUser = await Users.create({
-    serial: `SR-${serial}`,
+    serial: `UR-${serial}`,
     name: reqData.name,
     email: reqData.email,
     password: hash,

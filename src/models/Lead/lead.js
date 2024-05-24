@@ -1,5 +1,6 @@
 const { DataTypes } = require("sequelize");
 const { db1 } = require("../../config/dbConnect");
+const Sale = require("../Sale/sale");
 
 const Lead = db1.define(
   "Lead",
@@ -142,5 +143,6 @@ const Lead = db1.define(
     freezeTableName: true,
   }
 );
-
+Lead.hasMany(Sale, { foreignKey: "user_id" });
+Sale.belongsTo(Lead, { foreignKey: "user_id" });
 module.exports = Lead;
