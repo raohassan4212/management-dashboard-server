@@ -4,7 +4,7 @@ const errorLogger = require("../../functions/Logger");
 
 const create = async (req, res) => {
   try {
-    const validatedTicket = await ticketValidation.validate(req.body);
+    const validatedTicket = await ticketValidation.ticketSchema.validate(req.body);
 
     const newTicket = await TicketService.create(validatedTicket);
 
