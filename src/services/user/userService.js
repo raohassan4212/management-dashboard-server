@@ -8,6 +8,7 @@ const CommissionRate = require("../../models/CommissionRates/commissionRates");
 const Salary = require("../../models/Salary/salary");
 const Allowance = require("../../models/Allowance/allowance");
 const Unit = require("../../models/Unit/unit");
+const Department = require("../../models/Department/department");
 
 const signUp = async (reqData) => {
   const serial = Math.floor(100 + Math.random() * 9000);
@@ -80,7 +81,13 @@ const login = async (reqData, res) => {
       serial: serial,
       blocked: false,
     },
-    include: [{ model: ProfileInfo }],
+    include: [
+      { model: ProfileInfo },
+      {
+        model: Unit,
+        include: [{ model: Department }],
+      }
+    ],
   });
   if (!user) {
     return {
@@ -114,6 +121,8 @@ const login = async (reqData, res) => {
       has_allowance: user.has_allowance,
       has_salary: user.has_salary,
       designation: user?.ProfileInfo.designation,
+      unit: user?.Unit,
+      depart: user?.Unit?.Department,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     },
