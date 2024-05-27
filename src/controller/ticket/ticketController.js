@@ -108,7 +108,8 @@ const update = async (req, res) => {
 
 const paranoid = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.query;
+
 
     if (!id) {
       return res.status(422).json({
