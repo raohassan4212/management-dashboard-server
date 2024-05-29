@@ -25,7 +25,7 @@ const create = async (leadData) => {
 const get = async (reqData) => {
   const { id, status, type, month, user_id, serial, unit_id, potential } =
     reqData;
-  console.log(reqData);
+
   let whereClause = {};
 
   if (id) whereClause.id = id || "";
@@ -106,21 +106,22 @@ const update = async (reqData) => {
   }
 };
 
-const deleteAttendance = async (attendanceId) => {
-  const attendance = await Attendance.findOne({ where: { id: attendanceId } });
+const destroy = async (id) => {
+  console.log(id);
+  const Lead = await Lead.findOne({ where: { id: id } });
 
-  if (!attendance) {
-    throw new Error("Attendance not found");
+  if (!Lead) {
+    throw new Error("Lead not found");
   }
 
-  await attendance.destroy();
+ const destoryedLead =  await Lead.destroy();
 
-  return attendance;
+  return destoryedLead;
 };
 
 module.exports = {
   create,
   get,
   update,
-  deleteAttendance,
+  destroy,
 };

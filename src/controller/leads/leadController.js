@@ -41,7 +41,6 @@ const update = async (req, res) => {
   try {
     let { id } = req.body;
 
-    console.log(req.body);
     if (id == undefined || id == null) {
       return res.status(422).json({
         code: 422,
@@ -84,6 +83,7 @@ const update = async (req, res) => {
 const destroy = async (req, res) => {
   try {
     const { id } = req.params;
+    console.log(req.params);
 
     if (!id) {
       return res.status(422).json({
@@ -94,17 +94,18 @@ const destroy = async (req, res) => {
     }
 
     // Validate user update data (using Joi or custom logic)
-    const updatedUser = await leadService.delete(id);
+    console.log(id);
+    const deletedLead = await leadService.destroy(id);
 
     return res.status(200).json({
       code: 200,
       success: true,
       message: "Lead deleted successfully",
-      data: updatedUser,
+      data: deletedLead,
     });
   } catch (error) {
     let statusCode = 500;
-    let errorMessage = "Error lead profile";
+    let errorMessage = "Error deleting lead";
 
     // Handle specific errors and set appropriate status code/message
     errorLogger("DELETE", statusCode, error, "LEAD", "1", errorMessage);

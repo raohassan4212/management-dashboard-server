@@ -9,7 +9,7 @@ router.post("/create", leadController.create);
 router.post("/update", leadController.update);
 
 // Delete Department API
-router.delete("/:id", leadController.destroy);
+router.delete("/:id/delete", leadController.destroy);
 
 // Get All Departments API
 router.get("/get", leadController.get);
