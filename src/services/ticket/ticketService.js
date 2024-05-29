@@ -1,6 +1,7 @@
 const Ticket = require("../../models/Tickets/ticket");
 
 const create = async (reqData) => {
+  const serial = Math.floor(100 + Math.random() * 9000);
   try {
     if (!reqData) {
       return {
@@ -12,14 +13,14 @@ const create = async (reqData) => {
     }
 
     // Create a new task in the database
-    const newTicket = await Ticket.create(reqData);
+    const newTicket = await Ticket.create({...reqData,serial: `TI-${serial}`});
 
     if (newTicket) {
       return {
         code: 301,
         success: true,
         message: "Ticket created successfully",
-        data: newTask,
+        data: newTicket,
       };
     } else {
       return {
@@ -42,6 +43,15 @@ const create = async (reqData) => {
 
 const update = async (reqData) => {
   try {
+    const ticketToUpdate = await Ticket.findOne({ where: { id: reqData.id } });
+    if (!ticketToUpdate) {
+      return {
+        code: 400,
+        success: true,
+        message: "Ticket Not Found",
+        data: {},
+      };
+    }
     if (!reqData) {
       return {
         code: 301,
@@ -52,7 +62,7 @@ const update = async (reqData) => {
     }
 
     // Create a new task in the database
-    const updatedTicket = await Ticket.update(reqData);
+    const updatedTicket = await Ticket.upsert({...reqData});
 
     if (updatedTicket) {
       return {
@@ -70,7 +80,7 @@ const update = async (reqData) => {
       };
     }
   } catch (error) {
-    console.error("Error updating task:", error);
+    console.error("Error updating Ticket:", error);
     return {
       code: 500,
       success: false,
