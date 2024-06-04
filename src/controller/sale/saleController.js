@@ -4,7 +4,8 @@ const errorLogger = require("../../functions/Logger");
 
 const create = async (req, res) => {
   try {
-    console.log(`Req: POST, Update Sale`);
+    console.log(`Req: POST, Create Sale`);
+    console.log(req.body);
     const validatedSaleInfo = await saleValidation.validate(req.body);
     const response = await saleServices.create(validatedSaleInfo);
 

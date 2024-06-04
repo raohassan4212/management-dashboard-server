@@ -94,6 +94,5 @@ const Project = db1.define(
 );
 
 Project.hasMany(Prospect, { foreignKey: "project_id" });
-Project.hasMany(Sale, { foreignKey: "sale_id" });
 
 module.exports = Project;

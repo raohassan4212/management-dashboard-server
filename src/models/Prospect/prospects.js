@@ -80,14 +80,6 @@ const Prospect = db1.define(
         notEmpty: true,
       },
     },
-    project_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Projects",
-        key: "id",
-      },
-    },
   },
   {
     tableName: "Prospects",

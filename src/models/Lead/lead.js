@@ -143,6 +143,6 @@ const Lead = db1.define(
     freezeTableName: true,
   }
 );
-Lead.hasMany(Sale, { foreignKey: "user_id" });
-Sale.belongsTo(Lead, { foreignKey: "user_id" });
+Lead.hasMany(Sale, { foreignKey: "lead_id" });
+Sale.belongsTo(Lead, { foreignKey: "lead_id" });
 module.exports = Lead;

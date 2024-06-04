@@ -1,14 +1,19 @@
 const Sale = require("../../models/Sale/sale");
+const SaleService = require("../../models/SaleService/saleService");
+const Transactions = require("../../models/Transactions/transactions");
 
 const create = async (reqData) => {
+  const serialSale = Math.floor(100 + Math.random() * 9000);
+
   if (reqData) {
-    const createData = await Sale.create({ ...reqData });
-    if (createData) {
+    const createSale = await Sale.create({ ...reqData, serial: `SL-${serialSale}` });
+    
+    if (createSale) {
       return {
         code: 201,
         success: true,
         message: "Sale created successfully",
-        data: createData,
+        data:createSale
       };
     }
   }

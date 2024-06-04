@@ -10,6 +10,7 @@ const Ticket = require("../Tickets/ticket");
 const Lead = require("../Lead/lead");
 const Sale = require("../Sale/sale");
 const Project = require("../Project/project");
+const Transactions = require("../Transactions/transactions");
 
 const User = db1.define(
   "User",
@@ -73,6 +74,7 @@ User.hasOne(ProfileInfo, { foreignKey: "user_id" });
 User.hasOne(Allowance, { foreignKey: "user_id" });
 User.hasMany(Ticket, { foreignKey: "user_id" });
 User.hasMany(Sale, { foreignKey: "user_id" });
+User.hasMany(Transactions, { foreignKey: "user_id" });
 User.hasMany(Project, { foreignKey: "user_id" });
 
 User.hasMany(Lead, { foreignKey: "user_id" });

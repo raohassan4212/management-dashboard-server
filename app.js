@@ -16,6 +16,7 @@ const unitRoute = require("./src/route/unit/unitRoute");
 const leadRoute = require("./src/route/lead/leadRoute");
 const departmentRoute = require("./src/route/department/departmentRoute");
 const saleRoute = require("./src/route/sale/saleRoutes");
+const serviceRoute = require("./src/route/service/serviceRoute");
 const { calculateTolalSaleProfit } = require("./src/utils/cron.job");
 
 app.use(cors());
@@ -38,13 +39,13 @@ app.use("/public/api/v1/user/", userRoutes);
 app.use("/public/api/v1/profile/", profileRoutes);
 app.use("/public/api/v1/ticket/", ticketRoutes);
 app.use("/public/api/v1/project/", projectRoute);
+app.use("/public/api/v1/service/", serviceRoute);
 app.use("/public/api/v1/lead/", leadRoute);
 app.use("/public/api/v1/attendence/", attendenceRoute);
 app.use("/public/api/v1/department/", departmentRoute);
 app.use("/public/api/v1/unit/", unitRoute);
 app.use("/public/api/v1/report/", reportRoute);
 app.use("/public/api/v1/sale/", saleRoute);
-
 
 app.listen(PORT, () => {
   console.log(`Server is up on port ${PORT}`);

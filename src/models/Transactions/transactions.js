@@ -1,25 +1,37 @@
 const { DataTypes } = require("sequelize");
 const { db1, db3 } = require("../../config/dbConnect");
+const Sale = require("../Sale/sale");
 
-const Sale = db1.define(
-  "Sales",
+const Transactions = db1.define(
+  "Transactions",
   {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
+    outstanding: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    payment_method: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    acc_no: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     serial: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    type: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      defaultValue: "Upfront",
-    },
     amount: {
       type: DataTypes.FLOAT,
+      allowNull: false,
+    },
+    img: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     day: {
@@ -36,9 +48,11 @@ const Sale = db1.define(
     },
   },
   {
-    tableName: "Sales",
+    tableName: "Transactions",
     freezeTableName: true,
   }
 );
 
-module.exports = Sale;
+Transactions.belongsTo(Sale, { foreignKey: 'sale_id' });
+
+module.exports = Transactions;

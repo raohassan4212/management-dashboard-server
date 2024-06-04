@@ -96,7 +96,9 @@ const login = async (reqData, res) => {
       message: "user does not exist",
       data: {},
     };
-  }
+  } 
+
+  console.log(user);
 
   const passwordCheck = await bcrypt.compare(password, user.password);
   if (!passwordCheck) {
