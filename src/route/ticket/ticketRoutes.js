@@ -9,6 +9,6 @@ router.get("/get", tasksController.get);
 //Update Task API
 router.post("/update", tasksController.update);
 // Delete task API
-router.delete("/tasks/:taskId", tasksController.paranoid);
+router.delete("/delete", tasksController.paranoid);
 
 module.exports = router;

@@ -13,7 +13,10 @@ const create = async (reqData) => {
     }
 
     // Create a new task in the database
-    const newTicket = await Ticket.create({...reqData,serial: `TI-${serial}`});
+    const newTicket = await Ticket.create({
+      ...reqData,
+      serial: `TI-${serial}`,
+    });
 
     if (newTicket) {
       return {
@@ -62,7 +65,7 @@ const update = async (reqData) => {
     }
 
     // Create a new task in the database
-    const updatedTicket = await Ticket.upsert({...reqData});
+    const updatedTicket = await Ticket.upsert({ ...reqData });
 
     if (updatedTicket) {
       return {
@@ -129,6 +132,15 @@ const get = async (reqData) => {
 
 const paranoid = async (reqData, res) => {
   let parameter = "id";
+  const ticketToDelete = await Ticket.findOne({ where: { id: reqData } });
+  if (!ticketToDelete) {
+    return {
+      code: 400,
+      success: true,
+      message: "Ticket Not Found",
+      data: {},
+    };
+  }
   if (reqData) {
     const deletedTicket = await Ticket.destroy({
       where: { id: reqData },
