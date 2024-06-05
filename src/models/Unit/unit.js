@@ -8,7 +8,7 @@ const Project = require("../Project/project");
 const Lead = require("../Lead/lead");
 
 const Unit = db1.define(
-  "Unit",
+  "Units",
   {
     id: {
       type: DataTypes.INTEGER,

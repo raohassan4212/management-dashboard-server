@@ -18,9 +18,9 @@ const createProjectSchema = yup.object().shape({
     .required("Status is required")
     .oneOf(["Open", "In Progress", "Completed"], "Invalid status"),
   
-  pdf_link: yup
-  .string()
-  .required("PDF link is required"),
+  // pdf_link: yup
+  // .string()
+  // .required("PDF link is required"),
   
   type: yup
     .string()

@@ -55,13 +55,7 @@ const Project = db1.define(
     },
     type: {
       type: DataTypes.STRING(
-        "Development",
-        "Design",
-        "Marketing",
-        "AI",
-        "Cyber Security",
-        "Branding",
-        "Digital Marketing"
+    
       ),
       allowNull: false,
       defaultValue: "",
@@ -70,14 +64,14 @@ const Project = db1.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    prospect_id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: "Prospects",
-        key: "id",
-      },
-    },
+    // prospect_id: {
+    //   type: DataTypes.INTEGER,
+    //   allowNull: false,
+    //   references: {
+    //     model: "Prospects",
+    //     key: "id",
+    //   },
+    // },
     unit_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -93,6 +87,6 @@ const Project = db1.define(
   }
 );
 
-Project.hasMany(Prospect, { foreignKey: "project_id" });
+// Project.hasMany(Prospect, { foreignKey: "project_id" });
 
 module.exports = Project;
