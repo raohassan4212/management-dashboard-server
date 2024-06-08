@@ -39,10 +39,6 @@ const Project = db1.define(
     status: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "Open",
-      validate: {
-        isIn: ["Open", "In Progress", "Completed"],
-      },
     },
     doc_link: {
       type: DataTypes.STRING,
