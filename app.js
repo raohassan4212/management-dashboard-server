@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+const fs = require("fs");
+const path = require("path");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 require("dotenv").config();
@@ -10,6 +12,7 @@ const userRoutes = require("./src/route/user/userRoutes");
 const profileRoutes = require("./src/route/profile/profileRoutes");
 const ticketRoutes = require("./src/route/ticket/ticketRoutes");
 const projectRoute = require("./src/route/project/projectRoute");
+const transactionRoute = require("./src/route/transaction/transactionRoute");
 const attendenceRoute = require("./src/route/attendence/attendenceRoute");
 const reportRoute = require("./src/route/report/reportRoute");
 const unitRoute = require("./src/route/unit/unitRoute");
@@ -32,10 +35,16 @@ sequelize.db1
 //   .sync()
 //   .then(() => console.log("DB:2 Synced"))
 //   .catch((err) => console.error("Failed to sync DB:", err));
+// Ensure uploads directory exists
+const uploadDir = path.join(__dirname, "uploads");
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
 
 calculateTolalSaleProfit();
 
 app.use("/public/api/v1/user/", userRoutes);
+app.use("/public/api/v1/transaction/", transactionRoute);
 app.use("/public/api/v1/profile/", profileRoutes);
 app.use("/public/api/v1/ticket/", ticketRoutes);
 app.use("/public/api/v1/project/", projectRoute);
