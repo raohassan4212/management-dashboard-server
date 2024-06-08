@@ -4,6 +4,7 @@ const leadValidation = require("../../validation/lead/leadValidation");
 const leadService = require("../../services/lead/leadService");
 
 const create = async (req, res) => {
+  console.log(req);
   try {
     const validatedLeadInfo = await leadValidation.validate(req.body);
     console.log(validatedLeadInfo);
