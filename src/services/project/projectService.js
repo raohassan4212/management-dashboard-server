@@ -1,25 +1,32 @@
 const Project = require("../../models/Project/project");
 
-
 const createProject = async (projectData) => {
   try {
-    const newProject = await Project.create(projectData);
+    const serial = Math.floor(100 + Math.random() * 9000);
+    const newProject = await Project.create({
+      ...projectData,
+      serial: `PJ-${serial}`,
+    });
     return newProject;
   } catch (error) {
-    throw new Error("Failed to create project: " + error.message);
+    throw new Error("Failed to create project: " + error);
   }
 };
 
-
-const getAllProjects = async () => {
+const getAllProjects = async (reqData) => {
   try {
-    const projects = await Project.findAll();
+    const page = parseInt(reqData.page) || 0;
+    const pageSize = parseInt(reqData.pageSize) || 10;
+
+    const zeroBasedPage = Math.max(0, page - 1);
+    const offset = zeroBasedPage * pageSize;
+
+    const projects = await Project.findAll({ offset, limit: pageSize });
     return projects;
   } catch (error) {
     throw new Error("Failed to fetch projects: " + error.message);
   }
 };
-
 
 const getProjectById = async (projectId) => {
   try {
@@ -30,10 +37,9 @@ const getProjectById = async (projectId) => {
   }
 };
 
-
-const updateProjectById = async (projectId, projectData) => {
+const updateProjectById = async (projectData) => {
   try {
-    const project = await Project.findOne({ where: { id: projectId } });
+    const project = await Project.findOne({ where: { id: projectData.id } });
     if (!project) {
       throw new Error("Project not found");
     }
@@ -43,7 +49,6 @@ const updateProjectById = async (projectId, projectData) => {
     throw new Error("Failed to update project: " + error.message);
   }
 };
-
 
 const deleteProjectById = async (projectId) => {
   try {
@@ -58,5 +63,10 @@ const deleteProjectById = async (projectId) => {
   }
 };
 
-
-module.exports = { createProject, getAllProjects, getProjectById, updateProjectById, deleteProjectById };
+module.exports = {
+  createProject,
+  getAllProjects,
+  getProjectById,
+  updateProjectById,
+  deleteProjectById,
+};

@@ -18,7 +18,6 @@ const Project = db1.define(
     description: {
       type: DataTypes.TEXT,
       allowNull: false,
-      unique: true,
     },
     serial: {
       type: DataTypes.STRING,
@@ -32,10 +31,7 @@ const Project = db1.define(
       type: DataTypes.DATE,
       allowNull: false,
     },
-    due_date: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
+
     deadline: {
       type: DataTypes.DATE,
       allowNull: false,
@@ -44,7 +40,7 @@ const Project = db1.define(
       type: DataTypes.STRING,
       allowNull: false,
       defaultValue: "Open",
-      validate: {      
+      validate: {
         isIn: ["Open", "In Progress", "Completed"],
       },
     },
@@ -54,24 +50,10 @@ const Project = db1.define(
       defaultValue: "",
     },
     type: {
-      type: DataTypes.STRING(
-    
-      ),
+      type: DataTypes.STRING(),
       allowNull: false,
       defaultValue: "",
     },
-    last_updated: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    // prospect_id: {
-    //   type: DataTypes.INTEGER,
-    //   allowNull: false,
-    //   references: {
-    //     model: "Prospects",
-    //     key: "id",
-    //   },
-    // },
     unit_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
