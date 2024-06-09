@@ -5,6 +5,9 @@ const path = require("path");
 
 const Transactions = require("../../models/Transactions/transactions");
 const { uploadImage } = require("../../functions/ImageKit");
+const { model } = require("mongoose");
+const Sale = require("../../models/Sale/sale");
+const User = require("../../models/User/user");
 
 // Create transaction function
 const create = async (reqData, file) => {
@@ -76,6 +79,65 @@ const create = async (reqData, file) => {
   }
 };
 
+const get = async (reqData) => {
+  const {
+    id,
+    user_id,
+    serial,
+    type,
+    amount,
+    day,
+    month,
+    date,
+    unit_id,
+    lead_id,
+  } = reqData;
+  let whereClause = {};
+
+  if (id) whereClause.id = id || "";
+  if (user_id) whereClause.user_id = user_id || "";
+  if (serial) whereClause.serial = serial || "";
+  if (type) whereClause.type = type || "";
+  if (amount) whereClause.amount = amount || "";
+  if (day) whereClause.user_id = day || "";
+  if (month) whereClause.user_id = month || "";
+  if (date) whereClause.date = date || "";
+  if (unit_id) whereClause.unit_id = unit_id || "";
+  if (lead_id) whereClause.lead_id = lead_id || "";
+
+  const page = parseInt(reqData.page) || 0;
+  const pageSize = parseInt(reqData.pageSize) || 10;
+
+  const zeroBasedPage = Math.max(0, page - 1);
+  const offset = zeroBasedPage * pageSize;
+
+  let totalCount;
+  let transactions;
+
+  totalCount = await Transactions.count({ where: whereClause });
+  transactions = await Transactions.findAll({
+    where: whereClause,
+    offset,
+    limit: pageSize,
+    include:[
+      { model: Sale },
+      { model: User },
+    ]
+  });
+  if (transactions) {
+    return {
+      code: 200,
+      success: true,
+      message: "transactions retrieved successfully",
+      data: transactions,
+      currentPage: parseInt(page),
+      pageSize: parseInt(pageSize),
+      totalCount,
+    };
+  }
+};
+
 module.exports = {
   create,
+  get,
 };

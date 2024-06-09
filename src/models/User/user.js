@@ -74,11 +74,13 @@ User.hasOne(ProfileInfo, { foreignKey: "user_id" });
 User.hasOne(Allowance, { foreignKey: "user_id" });
 User.hasMany(Ticket, { foreignKey: "user_id" });
 User.hasMany(Sale, { foreignKey: "user_id" });
-User.hasMany(Transactions, { foreignKey: "user_id" });
 User.hasMany(Project, { foreignKey: "user_id" });
 
 User.hasMany(Lead, { foreignKey: "user_id" });
 Lead.belongsTo(User, { foreignKey: "user_id" });
+
+User.hasMany(Transactions, { foreignKey: "user_id" });
+Transactions.belongsTo(User, { foreignKey: 'user_id' });
 
 User.hasMany(Attendance, { foreignKey: "user_id" });
 Attendance.belongsTo(User, { foreignKey: "user_id" });

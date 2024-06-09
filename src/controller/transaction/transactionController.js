@@ -121,8 +121,7 @@ const paranoid = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
-    const { page, pageSize } = req.query;
-    const response = await saleServices.getAll(page, pageSize);
+    const response = await transactionService.get(req.query);
 
     return res.status(response.code).json({
       code: response.code,
@@ -132,17 +131,17 @@ const getAll = async (req, res) => {
     });
   } catch (error) {
     // Handle specific errors and set appropriate status code/message
-    errorLogger("Get All", 500, error, "Sales", "3", error);
+    errorLogger("GET", 500, error, "Transaction", "3", error);
     return res.status(500).json({
       code: 500,
       success: false,
-      message: "Error Getting All Sale",
+      message: "Error Getting All Transactions",
       error: error,
     });
   }
 };
 
-const getById = async (req, res) => {
+const getByQuery = async (req, res) => {
   try {
     let { id } = req.query;
 
@@ -173,4 +172,4 @@ const getById = async (req, res) => {
     });
   }
 };
-module.exports = { create, update, paranoid, getAll, getById };
+module.exports = { create, update, paranoid, getAll, getByQuery };

@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const multer = require("multer");
 const transactionController = require("../../controller/transaction/transactionController");
-const path = require("path")
+const path = require("path");
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -24,6 +24,6 @@ router.post("/update", transactionController.update);
 // router.delete("/:id/delete", transactionController.destroy);
 
 // Get All Units API
-// router.get("/get", transactionController.get);
+router.get("/get", transactionController.getAll);
 
 module.exports = router;

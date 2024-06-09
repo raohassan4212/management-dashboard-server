@@ -1,6 +1,7 @@
 const { DataTypes } = require("sequelize");
 const { db1, db3 } = require("../../config/dbConnect");
 const Sale = require("../Sale/sale");
+const User = require("../User/user");
 
 const Transactions = db1.define(
   "Transactions",
@@ -52,6 +53,7 @@ const Transactions = db1.define(
     freezeTableName: true,
   }
 );
+
 
 Transactions.belongsTo(Sale, { foreignKey: 'sale_id' });
 
