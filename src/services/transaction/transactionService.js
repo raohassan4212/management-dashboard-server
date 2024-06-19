@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const fs = require("fs-extra");
 const path = require("path");
+const moment = require("moment");
 
 const Transactions = require("../../models/Transactions/transactions");
 const { uploadImage } = require("../../functions/ImageKit");
@@ -18,7 +19,7 @@ const create = async (reqData, file) => {
     if (reqData && file) {
       const filePath = file.path;
       const fileBuffer = await fs.readFile(filePath);
-      const fileBase64 = fileBuffer.toString("base64");
+      const fileBase64 = await fileBuffer.toString("base64");
       const uploadedImgUrl = await uploadImage(
         fileBase64,
         `TS-${serial}`,
@@ -44,19 +45,19 @@ const create = async (reqData, file) => {
       });
 
       if (newTransaction) {
-        return res.status(200).json({
+        return {
           code: 200,
           success: true,
           message: "Transaction created successfully",
           data: newTransaction,
-        });
+        };
       } else {
-        return res.status(301).json({
+        return {
           code: 301,
           success: false,
           message: "Failed to create transaction",
           data: null,
-        });
+        };
       }
     }
 
@@ -80,30 +81,18 @@ const create = async (reqData, file) => {
 };
 
 const get = async (reqData) => {
-  const {
-    id,
-    user_id,
-    serial,
-    type,
-    amount,
-    day,
-    month,
-    date,
-    unit_id,
-    lead_id,
-  } = reqData;
+  const { id, user_id, serial, type, day, month, date, unit_id } = reqData;
   let whereClause = {};
+  console.log(reqData);
 
   if (id) whereClause.id = id || "";
   if (user_id) whereClause.user_id = user_id || "";
   if (serial) whereClause.serial = serial || "";
-  if (type) whereClause.type = type || "";
-  if (amount) whereClause.amount = amount || "";
+  if (type) whereClause.payment_method = type || "";
   if (day) whereClause.user_id = day || "";
-  if (month) whereClause.user_id = month || "";
-  if (date) whereClause.date = date || "";
+  if (month) whereClause.month = month || "";
+  if (date) whereClause.date = moment.utc(date).toISOString();
   if (unit_id) whereClause.unit_id = unit_id || "";
-  if (lead_id) whereClause.lead_id = lead_id || "";
 
   const page = parseInt(reqData.page) || 0;
   const pageSize = parseInt(reqData.pageSize) || 10;
@@ -119,10 +108,7 @@ const get = async (reqData) => {
     where: whereClause,
     offset,
     limit: pageSize,
-    include:[
-      { model: Sale },
-      { model: User },
-    ]
+    include: [{ model: Sale }, { model: User }],
   });
   if (transactions) {
     return {

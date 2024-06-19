@@ -43,8 +43,12 @@ const Transactions = db1.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    time: {
+      type: DataTypes.TIME,
+      allowNull: false,
+    },
     date: {
-      type: DataTypes.DATE,
+      type: DataTypes.DATEONLY,
       allowNull: false,
     },
   },

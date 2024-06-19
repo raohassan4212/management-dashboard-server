@@ -4,6 +4,7 @@ const transactionSchema = yup.object().shape({
   user_id: yup.string().required("User ID is required"),
   sale_id: yup.string().required("Sale ID is required"),
   payment_method: yup.string().required("Type is required"),
+  time: yup.string().required("Time is required"),
   amount: yup
     .number()
     .typeError("Amount must be a number")
