@@ -27,7 +27,8 @@ const createReport = async (req, res) => {
 
 const getAllReports = async (req, res) => {
   try {
-    const reports = await ReportService.getAllReports();
+    const { filter } = req.query;
+    const reports = await ReportService.getAllReports(filter);
 
     return res.status(200).json({
       code: 200,

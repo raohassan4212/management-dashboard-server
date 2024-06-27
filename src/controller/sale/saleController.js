@@ -169,4 +169,26 @@ const getById = async (req, res) => {
     });
   }
 };
-module.exports = { create, update, paranoid, getAll, getById };
+
+const getByFilter = async (req, res) => {
+  try {
+    const { filter } = req.query;
+    const response = await saleServices.getByFilter(filter);
+
+    return res.status(response.code).json({
+      code: response.code,
+      success: response.success,
+      message: response.message,
+      data: response.data,
+    });
+  } catch (error) {
+    errorLogger("Get All Sales By Filter", 500, error, "Sales", "3", error);
+    return res.status(500).json({
+      code: 500,
+      success: false,
+      message: "Error Getting All Sale",
+      error: error,
+    });
+  }
+};
+module.exports = { create, update, paranoid, getAll, getById, getByFilter };

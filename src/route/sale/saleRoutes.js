@@ -14,5 +14,7 @@ router.delete("/delete", saleController.paranoid);
 router.get("/get", saleController.getAll);
 //*Sale Get By Id Api */
 router.get("/get-id", saleController.getById);
+//*Sale Get By Filter Api */
+router.get("/get-by-filter", saleController.getByFilter);
 
 module.exports = router;

@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const {db1} = require("../../config/dbConnect");
+const { db1 } = require("../../config/dbConnect");
 
 const Report = db1.define(
   "Report",
@@ -40,6 +40,10 @@ const Report = db1.define(
     total_expenses: {
       type: DataTypes.FLOAT,
       allowNull: false,
+    },
+    month: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     // is_archived: {
     //   type: DataTypes.BOOLEAN,
